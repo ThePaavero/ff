@@ -68,11 +68,13 @@ const Extension = function() {
     })
 
     Array.from(elementsToLookIn).forEach(element => {
-      if (typeof element.innerText === 'undefined' || (element.childNodes.length > 0 && element.childNodes.length !== 1)) {
+      // if (typeof element.innerText === 'undefined' || element.childNodes.length !== 1) {
+      if (typeof element.innerText === 'undefined' || element.childNodes.length > 1) {
         return
       }
       if (element.innerText.toLowerCase().indexOf(str.toLowerCase()) > -1) {
-        // if (element.childNodes.length === 1 && element.childNodes[0].nodeType !== 3) {
+        // if (element.childNodes[0].nodeType !== 1) {
+        console.log(element.childNodes.length)
         state.matchingElements.push(element)
         // }
       }
