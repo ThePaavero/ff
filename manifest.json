@@ -1,0 +1,32 @@
+{
+  "name": "ZZ",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "...",
+  "homepage_url": "http://example.com",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "default_locale": "en",
+  "permissions": [],
+  "background": {
+    "scripts": [
+      "hot-reload.js"
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*/*"
+      ],
+      "js": [
+        "src/inject/inject.js"
+      ],
+      "css": [
+        "src/inject/styles.css"
+      ]
+    }
+  ]
+}

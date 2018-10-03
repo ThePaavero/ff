@@ -1,0 +1,1 @@
+Chrome extension for automatically displaying monthly costs for a home on the oikotie.fi website.
