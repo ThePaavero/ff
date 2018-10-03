@@ -5,6 +5,7 @@ const Extension = function() {
     keyKeyPressedCount: 0,
     currentCommand: '',
     matchIndex: 0,
+    matchingElements: [],
   }
 
   let promptElement = null
@@ -61,15 +62,22 @@ const Extension = function() {
 
   const updateMatches = (str) => {
     const elementsToLookIn = document.querySelectorAll('body *:not(#zz-prompt)')
-    const matchingElements = []
+    state.matchingElements = []
 
     Array.from(elementsToLookIn).forEach(element => {
+      element.classList.remove('zz-match')
       if (element.innerText.toLowerCase().indexOf(str.toLowerCase()) > -1) {
-        matchingElements.push(element)
+        state.matchingElements.push(element)
       }
     })
-    
-    console.log(matchingElements)
+
+    renderMatches()
+  }
+
+  const renderMatches = () => {
+    state.matchingElements.forEach(element => {
+      element.classList.add('zz-match')
+    })
   }
 
   const tick = (cmd) => {

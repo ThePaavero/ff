@@ -20,3 +20,7 @@
 #zz-prompt.active {
     display: block;
 }
+
+.zz-match {
+    border: solid 2px red;
+}
