@@ -10,8 +10,18 @@ const Extension = function() {
   const createPromptElement = () => {
     const div = document.createElement('div')
     div.id = 'zz-prompt'
+    div.setAttribute('contenteditable', true)
     document.body.appendChild(div)
     promptElement = div
+  }
+
+  const toggleActive = () => {
+    state.keyKeyPressedCount = 0
+    state.active = !state.active
+    promptElement.classList.toggle('active')
+    if (state.active) {
+      promptElement.focus()
+    }
   }
 
   const init = () => {
@@ -22,9 +32,7 @@ const Extension = function() {
       }
       state.keyKeyPressedCount++
       if (state.keyKeyPressedCount === 2) {
-        state.keyKeyPressedCount = 0
-        state.active = true
-        promptElement.classList.toggle('active')
+        toggleActive()
       }
     })
   }
