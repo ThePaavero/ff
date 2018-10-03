@@ -60,6 +60,13 @@ const Extension = function() {
     })
   }
 
+  const elementShouldBeSkipped = (element) => {
+    if (typeof element.innerText === 'undefined') {
+      return true
+    }
+    return false
+  }
+
   const updateMatches = (str) => {
     const elementsToLookIn = document.querySelectorAll('body *:not(#zz-prompt)')
     state.matchingElements = []
@@ -68,15 +75,8 @@ const Extension = function() {
     })
 
     Array.from(elementsToLookIn).forEach(element => {
-      // if (typeof element.innerText === 'undefined' || element.childNodes.length !== 1) {
-      if (typeof element.innerText === 'undefined' || element.childNodes.length > 1) {
-        return
-      }
-      if (element.innerText.toLowerCase().indexOf(str.toLowerCase()) > -1) {
-        // if (element.childNodes[0].nodeType !== 1) {
-        console.log(element.childNodes.length)
+      if (!elementShouldBeSkipped(element) && (element.innerText.toLowerCase().indexOf(str.toLowerCase()) > -1)) {
         state.matchingElements.push(element)
-        // }
       }
     })
 
