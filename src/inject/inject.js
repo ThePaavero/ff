@@ -74,8 +74,17 @@ const Extension = function() {
     renderMatches()
   }
 
+  const removeMatchMarkForParentElements = (child) => {
+    if (!child.parentNode) {
+      return
+    }
+    child.parentNode.classList.remove('zz-match')
+    removeMatchMarkForParentElements(child.parentNode)
+  }
+
   const renderMatches = () => {
     state.matchingElements.forEach(element => {
+      removeMatchMarkForParentElements(element)
       element.classList.add('zz-match')
     })
   }
