@@ -68,14 +68,13 @@ const Extension = function() {
     })
 
     Array.from(elementsToLookIn).forEach(element => {
-      // if (element.childNodes.length > 0 && element.childNodes.length !== 1 && element.childNodes[0].nodeType !== Node.TEXT_NODE) {
-      if (element.childNodes.length !== 1) {
-        // if (element.childNodes[0].nodeType !== Node.TEXT_NODE) {
+      if (typeof element.innerText === 'undefined' || (element.childNodes.length > 0 && element.childNodes.length !== 1)) {
         return
-        // }
       }
       if (element.innerText.toLowerCase().indexOf(str.toLowerCase()) > -1) {
+        // if (element.childNodes.length === 1 && element.childNodes[0].nodeType !== 3) {
         state.matchingElements.push(element)
+        // }
       }
     })
 
