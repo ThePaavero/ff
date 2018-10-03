@@ -65,6 +65,9 @@ const Extension = function() {
     state.matchingElements = []
 
     Array.from(elementsToLookIn).forEach(element => {
+      if (element.childNodes.length > 1) {
+        return
+      }
       element.classList.remove('zz-match')
       if (element.innerText.toLowerCase().indexOf(str.toLowerCase()) > -1) {
         state.matchingElements.push(element)
@@ -74,17 +77,8 @@ const Extension = function() {
     renderMatches()
   }
 
-  const removeMatchMarkForParentElements = (child) => {
-    if (!child.parentNode) {
-      return
-    }
-    child.parentNode.classList.remove('zz-match')
-    removeMatchMarkForParentElements(child.parentNode)
-  }
-
   const renderMatches = () => {
     state.matchingElements.forEach(element => {
-      removeMatchMarkForParentElements(element)
       element.classList.add('zz-match')
     })
   }
