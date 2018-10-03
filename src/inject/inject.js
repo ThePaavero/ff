@@ -63,12 +63,14 @@ const Extension = function() {
   const updateMatches = (str) => {
     const elementsToLookIn = document.querySelectorAll('body *:not(#zz-prompt)')
     state.matchingElements = []
+    Array.from(document.querySelectorAll('*')).forEach(x => {
+      x.classList.remove('zz-match')
+    })
 
     Array.from(elementsToLookIn).forEach(element => {
-      if (element.childNodes.length > 1) {
+      if (element.childNodes.length > 0 && element.childNodes[0].nodeType !== Node.TEXT_NODE) {
         return
       }
-      element.classList.remove('zz-match')
       if (element.innerText.toLowerCase().indexOf(str.toLowerCase()) > -1) {
         state.matchingElements.push(element)
       }
