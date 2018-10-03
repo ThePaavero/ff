@@ -52,12 +52,28 @@ const Extension = function() {
         toggleActive()
       }
       state.currentCommand = promptElement.innerText.trim()
+      if (state.currentCommand === '') {
+        return
+      }
       tick(state.currentCommand)
     })
   }
 
+  const updateMatches = (str) => {
+    const elementsToLookIn = document.querySelectorAll('body *:not(#zz-prompt)')
+    const matchingElements = []
+
+    Array.from(elementsToLookIn).forEach(element => {
+      if (element.innerText.toLowerCase().indexOf(str.toLowerCase()) > -1) {
+        matchingElements.push(element)
+      }
+    })
+    
+    console.log(matchingElements)
+  }
+
   const tick = (cmd) => {
-    console.log(cmd)
+    updateMatches(cmd)
   }
 
   const toggleActive = () => {
