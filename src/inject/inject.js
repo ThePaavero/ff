@@ -70,8 +70,8 @@ const Extension = function() {
   const updateMatches = (str) => {
     const elementsToLookIn = document.querySelectorAll('body *:not(#zz-prompt)')
     state.matchingElements = []
-    Array.from(document.querySelectorAll('body *')).forEach(x => {
-      x.classList.remove('zz-match')
+    Array.from(document.querySelectorAll('body *')).forEach(element => {
+      element.classList.remove('zz-match')
     })
 
     Array.from(elementsToLookIn).forEach(element => {
