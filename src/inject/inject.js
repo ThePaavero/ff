@@ -1,7 +1,32 @@
 const Extension = function() {
 
+  const state = {
+    active: false,
+    keyKeyPressedCount: 0
+  }
+
+  let promptElement = null
+
+  const createPromptElement = () => {
+    const div = document.createElement('div')
+    div.id = 'zz-prompt'
+    document.body.appendChild(div)
+    promptElement = div
+  }
+
   const init = () => {
-    console.log(':DD')
+    createPromptElement()
+    document.addEventListener('keyup', e => {
+      if (e.key !== 'z') {
+        return
+      }
+      state.keyKeyPressedCount++
+      if (state.keyKeyPressedCount === 2) {
+        state.keyKeyPressedCount = 0
+        state.active = true
+        promptElement.classList.toggle('active')
+      }
+    })
   }
 
   return {

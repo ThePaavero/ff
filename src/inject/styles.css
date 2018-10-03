@@ -1,0 +1,22 @@
+#zz-prompt {
+    margin: 0;
+    border-radius: 0;
+    border: none;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 30px;
+    line-height: 30px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 3px;
+    box-sizing: border-box;
+    display: none;
+    z-index: 99999999;
+}
+
+#zz-prompt.active {
+    display: block;
+}
