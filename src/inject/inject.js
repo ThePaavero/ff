@@ -67,6 +67,19 @@ const Extension = function() {
     return false
   }
 
+  const elementsContentMatch = (element, str) => {
+    const textNodes = Array.from(element.childNodes).filter(child => child.nodeType === Node.TEXT_NODE)
+    let match = false
+    textNodes.forEach(textNode => {
+      const textContent = textNode.textContent
+      if (textContent.toLowerCase().indexOf(str.toLowerCase()) > -1) {
+        match = true
+      }
+    })
+    return match
+    //  (element.innerText.toLowerCase().indexOf(str.toLowerCase()) > -1)
+  }
+
   const updateMatches = (str) => {
     const elementsToLookIn = document.querySelectorAll('body *:not(#zz-prompt)')
     state.matchingElements = []
@@ -75,8 +88,10 @@ const Extension = function() {
     })
 
     Array.from(elementsToLookIn).forEach(element => {
-      if (!elementShouldBeSkipped(element) && (element.innerText.toLowerCase().indexOf(str.toLowerCase()) > -1)) {
-        state.matchingElements.push(element)
+      if (!elementShouldBeSkipped(element)) {
+        if (elementsContentMatch(element, str)) {
+          state.matchingElements.push(element)
+        }
       }
     })
 

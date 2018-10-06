@@ -15,6 +15,7 @@
     box-sizing: border-box;
     display: none;
     z-index: 99999999;
+    text-align: left;
 }
 
 #zz-prompt.active {
