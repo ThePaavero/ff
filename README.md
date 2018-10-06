@@ -1,1 +1,7 @@
-Chrome extension for automatically displaying monthly costs for a home on the oikotie.fi website.
+# Chrome extension for miscellaneous keyboard command driven functions.
+
+## Install
+Install the extension
+
+## Usage
+Doubletap `z` on your keyboard to open up the prompt bar.
