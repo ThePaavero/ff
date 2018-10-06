@@ -10,6 +10,12 @@ const Extension = function() {
 
   let promptElement = null
 
+  const resetAllMatches = () => {
+    Array.from(document.querySelectorAll('body *')).forEach(element => {
+      element.classList.remove('zz-match')
+    })
+  }
+
   const createPromptElement = () => {
     const div = document.createElement('div')
     div.id = 'zz-prompt'
@@ -61,10 +67,7 @@ const Extension = function() {
   }
 
   const elementShouldBeSkipped = (element) => {
-    if (typeof element.innerText === 'undefined') {
-      return true
-    }
-    return false
+    return typeof element.innerText === 'undefined'
   }
 
   const elementsContentMatch = (element, str) => {
@@ -77,15 +80,12 @@ const Extension = function() {
       }
     })
     return match
-    //  (element.innerText.toLowerCase().indexOf(str.toLowerCase()) > -1)
   }
 
   const updateMatches = (str) => {
     const elementsToLookIn = document.querySelectorAll('body *:not(#zz-prompt)')
     state.matchingElements = []
-    Array.from(document.querySelectorAll('body *')).forEach(element => {
-      element.classList.remove('zz-match')
-    })
+    resetAllMatches()
 
     Array.from(elementsToLookIn).forEach(element => {
       if (!elementShouldBeSkipped(element)) {
@@ -117,6 +117,7 @@ const Extension = function() {
     } else {
       state.currentCommand = ''
       promptElement.innerText = state.currentCommand
+      resetAllMatches()
     }
   }
 
