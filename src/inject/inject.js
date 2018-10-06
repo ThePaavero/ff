@@ -11,6 +11,7 @@ const Extension = function() {
   let promptElement = null
 
   const resetAllMatches = () => {
+    state.matchingElements = []
     Array.from(document.querySelectorAll('body *')).forEach(element => {
       element.classList.remove('zz-match')
     })
