@@ -15,6 +15,9 @@ const Extension = function() {
     Array.from(document.querySelectorAll('body *')).forEach(element => {
       element.classList.remove('zz-match')
     })
+    Array.from(document.querySelectorAll('.zz-label')).forEach(element => {
+      element.parentElement.removeChild(element)
+    })
   }
 
   const createPromptElement = () => {
@@ -46,6 +49,9 @@ const Extension = function() {
     state.matchIndex++
   }
 
+  const onEnter = () => {
+  }
+
   const listenToPromptEvents = () => {
     promptElement.addEventListener('keydown', e => {
       if (e.key === 'Enter' || e.key === 'Tab') {
@@ -53,6 +59,9 @@ const Extension = function() {
       }
       if (e.key === 'Tab') {
         goToNextMatch()
+      }
+      if (e.key === 'Enter') {
+        onEnter()
       }
     })
     promptElement.addEventListener('keyup', e => {
@@ -100,8 +109,16 @@ const Extension = function() {
   }
 
   const renderMatches = () => {
+    let counter = 1
     state.matchingElements.forEach(element => {
       element.classList.add('zz-match')
+      const label = document.createElement('div')
+      label.innerText = counter
+      label.className = 'zz-label'
+      label.style.top = element.offsetTop + 'px'
+      label.style.left = element.offsetLeft + 'px'
+      document.body.appendChild(label)
+      counter++
     })
   }
 
