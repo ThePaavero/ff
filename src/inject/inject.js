@@ -9,6 +9,7 @@ const Extension = function() {
   }
 
   let promptElement = null
+  let wrapperElement = null
 
   const resetAllMatches = () => {
     state.matchingElements = []
@@ -20,17 +21,20 @@ const Extension = function() {
     })
   }
 
-  const createPromptElement = () => {
-    const div = document.createElement('div')
-    div.id = 'zz-prompt'
-    div.setAttribute('contenteditable', true)
-    document.body.appendChild(div)
-    promptElement = div
-    promptElement.addEventListener('blur', e => {
+  const createPromptElements = () => {
+    wrapperElement = document.createElement('div')
+    wrapperElement.id = 'zz-wrapper'
+    wrapperElement.addEventListener('blur', e => {
       if (state.active) {
         toggleActive()
       }
     })
+
+    promptElement = document.createElement('div')
+    promptElement.id = 'zz-prompt'
+    promptElement.setAttribute('contenteditable', true)
+    wrapperElement.appendChild(promptElement)
+    document.body.appendChild(wrapperElement)
   }
 
   const listenToGlobalTriggers = () => {
@@ -129,7 +133,7 @@ const Extension = function() {
   const toggleActive = () => {
     state.keyKeyPressedCount = 0
     state.active = !state.active
-    promptElement.classList.toggle('active')
+    wrapperElement.classList.toggle('active')
     if (state.active) {
       promptElement.focus()
     } else {
@@ -141,7 +145,7 @@ const Extension = function() {
 
   const init = () => {
     listenToGlobalTriggers()
-    createPromptElement()
+    createPromptElements()
     listenToPromptEvents()
   }
 
