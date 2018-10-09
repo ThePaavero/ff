@@ -68,6 +68,9 @@ const Extension = function() {
   }
 
   const goToNextMatch = () => {
+    if (state.matchIndex === state.matchingElements.length) {
+      state.matchIndex = 0
+    }
     state.matchIndex++
     resetAllMatches(false)
     renderMatches()
@@ -155,7 +158,6 @@ const Extension = function() {
   }
 
   const tick = (cmd) => {
-    console.log('tick')
     state.matchIndex = 1
     resetAllMatches()
     updateMatches(cmd)
