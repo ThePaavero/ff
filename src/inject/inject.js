@@ -6,6 +6,7 @@ const Extension = function() {
     currentCommand: '',
     matchIndex: 1,
     matchingElements: [],
+    shiftPressed: false,
   }
 
   let promptElement = null
@@ -65,13 +66,34 @@ const Extension = function() {
         toggleActive()
       }
     })
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Shift') {
+        state.shiftPressed = true
+      }
+    })
+    document.addEventListener('keyup', e => {
+      if (e.key === 'Shift') {
+        state.shiftPressed = false
+      }
+    })
   }
 
   const goToNextMatch = () => {
     if (state.matchIndex === state.matchingElements.length) {
-      state.matchIndex = 0
+      state.matchIndex = 1
     }
-    state.matchIndex++
+    if (state.shiftPressed) {
+      state.matchIndex--
+      if (state.matchIndex < 1) {
+        state.matchIndex = state.matchingElements.length
+      }
+    } else {
+      state.matchIndex++
+    }
+    
+    console.log(state.matchIndex)
+
     resetAllMatches(false)
     renderMatches()
     renderInfo()
