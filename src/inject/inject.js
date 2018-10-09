@@ -7,7 +7,6 @@ const Extension = function() {
     matchIndex: 1,
     matchingElements: [],
     shiftPressed: false,
-    selectorMode: false,
   }
 
   let promptElement = null
@@ -149,7 +148,15 @@ const Extension = function() {
   }
 
   const updateMatches = (str) => {
-    state.matchingElements = doTextSearch(str)
+    const firstCharacter = str.substr(0, 1)
+    switch (firstCharacter) {
+      case ':':
+        state.matchingElements = Array.from(document.querySelectorAll(str.substr(1, str.length)))
+        break
+      default:
+        state.matchingElements = doTextSearch(str)
+        break
+    }
   }
 
   const doTextSearch = (str) => {
