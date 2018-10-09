@@ -80,20 +80,14 @@ const Extension = function() {
   }
 
   const goToNextMatch = () => {
-    if (state.matchIndex === state.matchingElements.length) {
+    state.matchIndex += (state.shiftPressed ? -1 : 1)
+    if (state.matchIndex === state.matchingElements.length + 1) {
       state.matchIndex = 1
     }
-    if (state.shiftPressed) {
-      state.matchIndex--
-      if (state.matchIndex < 1) {
-        state.matchIndex = state.matchingElements.length
-      }
-    } else {
-      state.matchIndex++
+    if (state.matchIndex < 1) {
+      state.matchIndex = state.matchingElements.length
     }
-    
     console.log(state.matchIndex)
-
     resetAllMatches(false)
     renderMatches()
     renderInfo()
