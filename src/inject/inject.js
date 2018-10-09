@@ -66,6 +66,7 @@ const Extension = function() {
 
   const goToNextMatch = () => {
     state.matchIndex++
+    renderInfo()
   }
 
   const onEnter = () => {
@@ -78,11 +79,13 @@ const Extension = function() {
       }
       if (e.key === 'Tab') {
         goToNextMatch()
+        return
       }
       if (e.key === 'Enter') {
         onEnter()
       }
     })
+
     promptElement.addEventListener('keyup', e => {
       if (e.key === 'Escape') {
         toggleActive()
@@ -91,7 +94,9 @@ const Extension = function() {
       if (state.currentCommand === '') {
         return
       }
-      tick(state.currentCommand)
+      if (e.key !== 'Tab') {
+        tick(state.currentCommand)
+      }
     })
   }
 
@@ -135,13 +140,19 @@ const Extension = function() {
       document.body.appendChild(label)
       counter++
     })
+  }
+
+  const renderInfo = () => {
     infoElement.innerHTML = `${state.matchingElements.length} matches (${state.matchIndex})`
   }
 
   const tick = (cmd) => {
+    console.log('tick')
+    state.matchIndex = 0
     resetAllMatches()
     updateMatches(cmd)
     renderMatches()
+    renderInfo()
   }
 
   const toggleActive = () => {
