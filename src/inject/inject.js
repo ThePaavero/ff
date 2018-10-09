@@ -155,7 +155,7 @@ const Extension = function() {
   }
 
   const renderInfo = () => {
-    infoElement.innerHTML = `${state.matchingElements.length} matches (${state.matchIndex})`
+    infoElement.innerHTML = `${state.matchingElements.length} matches ${state.matchingElements.length > 1 ? '(' + state.matchIndex + ')' : ''}`
   }
 
   const tick = (cmd) => {
