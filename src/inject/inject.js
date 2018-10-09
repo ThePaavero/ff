@@ -114,8 +114,6 @@ const Extension = function() {
   const updateMatches = (str) => {
     const elementsToLookIn = document.querySelectorAll('body *:not(#zz-prompt)')
     state.matchingElements = []
-    resetAllMatches()
-
     Array.from(elementsToLookIn).forEach(element => {
       if (!elementShouldBeSkipped(element)) {
         if (elementsContentMatch(element, str)) {
@@ -123,8 +121,6 @@ const Extension = function() {
         }
       }
     })
-
-    renderMatches()
   }
 
   const renderMatches = () => {
@@ -139,11 +135,13 @@ const Extension = function() {
       document.body.appendChild(label)
       counter++
     })
-    infoElement.innerHTML = `${state.matchingElements.length} matches`
+    infoElement.innerHTML = `${state.matchingElements.length} matches (${state.matchIndex})`
   }
 
   const tick = (cmd) => {
+    resetAllMatches()
     updateMatches(cmd)
+    renderMatches()
   }
 
   const toggleActive = () => {
