@@ -144,10 +144,11 @@ const Extension = function() {
         element.classList.add('zz-current-index')
       }
       const label = document.createElement('div')
+      const coordinates = element.getBoundingClientRect()
       label.innerText = counter
       label.className = 'zz-label'
-      label.style.top = element.offsetTop + 'px'
-      label.style.left = element.offsetLeft + 'px'
+      label.style.top = coordinates.y + 'px'
+      label.style.left = coordinates.x + 'px'
       document.body.appendChild(label)
       counter++
     })
