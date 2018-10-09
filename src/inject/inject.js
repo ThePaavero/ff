@@ -87,7 +87,6 @@ const Extension = function() {
     if (state.matchIndex < 1) {
       state.matchIndex = state.matchingElements.length
     }
-    console.log(state.matchIndex)
     resetAllMatches(false)
     renderMatches()
     renderInfo()
