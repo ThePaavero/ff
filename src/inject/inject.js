@@ -7,6 +7,7 @@ const Extension = function() {
     matchIndex: 1,
     matchingElements: [],
     shiftPressed: false,
+    selectorMode: false,
   }
 
   let promptElement = null
@@ -148,15 +149,20 @@ const Extension = function() {
   }
 
   const updateMatches = (str) => {
+    state.matchingElements = doTextSearch(str)
+  }
+
+  const doTextSearch = (str) => {
     const elementsToLookIn = document.querySelectorAll('body *:not(#zz-prompt)')
-    state.matchingElements = []
+    const matches = []
     Array.from(elementsToLookIn).forEach(element => {
       if (!elementShouldBeSkipped(element)) {
         if (elementsContentMatch(element, str)) {
-          state.matchingElements.push(element)
+          matches.push(element)
         }
       }
     })
+    return matches
   }
 
   const renderMatches = () => {
