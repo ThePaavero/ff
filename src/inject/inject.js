@@ -4,7 +4,7 @@ const Extension = function() {
     active: false,
     keyKeyPressedCount: 0,
     currentCommand: '',
-    matchIndex: 0,
+    matchIndex: 1,
     matchingElements: [],
   }
 
@@ -12,10 +12,13 @@ const Extension = function() {
   let wrapperElement = null
   let infoElement = null
 
-  const resetAllMatches = () => {
-    state.matchingElements = []
+  const resetAllMatches = (resetData = true) => {
+    if (resetData) {
+      state.matchingElements = []
+    }
     Array.from(document.querySelectorAll('body *')).forEach(element => {
       element.classList.remove('zz-match')
+      element.classList.remove('zz-current-index')
     })
     Array.from(document.querySelectorAll('.zz-label')).forEach(element => {
       element.parentElement.removeChild(element)
@@ -66,6 +69,8 @@ const Extension = function() {
 
   const goToNextMatch = () => {
     state.matchIndex++
+    resetAllMatches(false)
+    renderMatches()
     renderInfo()
   }
 
@@ -132,6 +137,9 @@ const Extension = function() {
     let counter = 1
     state.matchingElements.forEach(element => {
       element.classList.add('zz-match')
+      if (counter === state.matchIndex) {
+        element.classList.add('zz-current-index')
+      }
       const label = document.createElement('div')
       label.innerText = counter
       label.className = 'zz-label'
@@ -148,7 +156,7 @@ const Extension = function() {
 
   const tick = (cmd) => {
     console.log('tick')
-    state.matchIndex = 0
+    state.matchIndex = 1
     resetAllMatches()
     updateMatches(cmd)
     renderMatches()
