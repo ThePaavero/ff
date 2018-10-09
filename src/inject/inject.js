@@ -18,8 +18,7 @@ const Extension = function() {
       state.matchingElements = []
     }
     Array.from(document.querySelectorAll('body *')).forEach(element => {
-      element.classList.remove('zz-match')
-      element.classList.remove('zz-current-index')
+      element.classList.remove(...['zz-match', 'zz-current-index'])
     })
     Array.from(document.querySelectorAll('.zz-label')).forEach(element => {
       element.parentElement.removeChild(element)
