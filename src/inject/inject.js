@@ -10,6 +10,7 @@ const Extension = function() {
 
   let promptElement = null
   let wrapperElement = null
+  let infoElement = null
 
   const resetAllMatches = () => {
     state.matchingElements = []
@@ -21,7 +22,27 @@ const Extension = function() {
     })
   }
 
-  const createPromptElements = () => {
+  const createElements = () => {
+    createWrapperElement()
+    createPromptElement()
+    createInfoElement()
+  }
+
+  const createInfoElement = () => {
+    infoElement = document.createElement('div')
+    infoElement.id = 'zz-infoElement'
+    wrapperElement.appendChild(infoElement)
+  }
+
+  const createPromptElement = () => {
+    promptElement = document.createElement('div')
+    promptElement.id = 'zz-prompt'
+    promptElement.setAttribute('contenteditable', true)
+    wrapperElement.appendChild(promptElement)
+    document.body.appendChild(wrapperElement)
+  }
+
+  const createWrapperElement = () => {
     wrapperElement = document.createElement('div')
     wrapperElement.id = 'zz-wrapper'
     wrapperElement.addEventListener('blur', e => {
@@ -29,12 +50,6 @@ const Extension = function() {
         toggleActive()
       }
     })
-
-    promptElement = document.createElement('div')
-    promptElement.id = 'zz-prompt'
-    promptElement.setAttribute('contenteditable', true)
-    wrapperElement.appendChild(promptElement)
-    document.body.appendChild(wrapperElement)
   }
 
   const listenToGlobalTriggers = () => {
@@ -124,6 +139,7 @@ const Extension = function() {
       document.body.appendChild(label)
       counter++
     })
+    infoElement.innerHTML = `${state.matchingElements.length} matches`
   }
 
   const tick = (cmd) => {
@@ -145,7 +161,7 @@ const Extension = function() {
 
   const init = () => {
     listenToGlobalTriggers()
-    createPromptElements()
+    createElements()
     listenToPromptEvents()
   }
 

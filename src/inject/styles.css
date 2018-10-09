@@ -11,7 +11,7 @@
     line-height: 30px;
     background-color: rgba(0, 0, 0, 0.8);
     color: #fff;
-    padding: 3px;
+    padding: 3px 15px;
     box-sizing: border-box;
     display: none;
     z-index: 99999999;
@@ -21,11 +21,20 @@
 }
 
 #zz-wrapper.active {
-    display: block;
+    display: flex;
 }
 
 #zz-prompt {
-    /* ... */
+    flex-basis: 80%;
+    height: 25px;
+    line-height: 25px !important;
+    background-color: #000;
+    padding: 2px;
+}
+
+#zz-prompt:active,
+#zz-prompt:focus {
+    outline: solid 1px orange;
 }
 
 .zz-match {
@@ -38,7 +47,6 @@
 
 .zz-label {
     position: absolute;
-    /*opacity: 0.5;*/
     top: 0;
     left: 0;
     width: 15px;
@@ -48,4 +56,9 @@
     background-color: orange;
     text-align: center;
     color: #000;
+}
+
+#zz-infoElement {
+    flex-basis: 20%;
+    text-align: right;
 }
