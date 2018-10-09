@@ -132,7 +132,7 @@ const Extension = function() {
   }
 
   const elementShouldBeSkipped = (element) => {
-    return typeof element.innerText === 'undefined'
+    return typeof element.innerText === 'undefined' || element.hidden
   }
 
   const elementsContentMatch = (element, str) => {
