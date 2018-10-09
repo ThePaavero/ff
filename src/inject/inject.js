@@ -77,7 +77,15 @@ const Extension = function() {
     renderInfo()
   }
 
+  const getCurrentMatchingElement = () => {
+    return state.matchingElements[state.matchIndex - 1]
+  }
+
   const onEnter = () => {
+    const currentMatchingElement = getCurrentMatchingElement()
+    currentMatchingElement.click()
+    resetAllMatches()
+    toggleActive()
   }
 
   const listenToPromptEvents = () => {
@@ -91,6 +99,7 @@ const Extension = function() {
       }
       if (e.key === 'Enter') {
         onEnter()
+        return
       }
     })
 
