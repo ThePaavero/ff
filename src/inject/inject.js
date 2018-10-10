@@ -64,7 +64,10 @@ const Extension = function () {
       if (e.key !== triggerKey) {
         return
       }
-      triggerKeyTappedTimeoutId = setTimeout(() => {
+      if (state.triggerKeyTappedTimeoutId) {
+        clearTimeout(state.triggerKeyTappedTimeoutId)
+      }
+      state.triggerKeyTappedTimeoutId = setTimeout(() => {
         state.keyKeyPressedCount = 0
       }, millisecondsThresholdForTriggerTaps)
       state.keyKeyPressedCount++
