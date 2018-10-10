@@ -107,7 +107,7 @@ const Extension = function () {
     })
   }
 
-  const goToNextMatch = () => {
+  const rotateMatch = () => {
     state.matchIndex += (state.shiftPressed ? -1 : 1)
     if (state.matchIndex === state.matchingElements.length + 1) {
       state.matchIndex = 1
@@ -137,7 +137,7 @@ const Extension = function () {
         e.preventDefault()
       }
       if (e.key === 'Tab') {
-        goToNextMatch()
+        rotateMatch()
         return
       }
       if (e.key === 'Enter') {
@@ -170,7 +170,7 @@ const Extension = function () {
       if (state.currentCommand === '') {
         return
       }
-      if (e.key !== 'Tab') {
+      if (e.key !== 'Tab' && e.key !== 'Shift') {
         tick(state.currentCommand)
       }
     })
