@@ -1,10 +1,14 @@
-const Extension = function() {
+const Extension = function () {
+
+  const triggerKey = 'z'
+  const millisecondsThresholdForTriggerTaps = 500
 
   const state = {
     active: false,
     keyKeyPressedCount: 0,
     currentCommand: '',
     matchIndex: 1,
+    triggerKeyTappedTimeoutId: null,
     matchingElements: [],
     shiftPressed: false,
   }
@@ -57,11 +61,15 @@ const Extension = function() {
 
   const listenToGlobalTriggers = () => {
     document.addEventListener('keyup', e => {
-      if (e.key !== 'z') {
+      if (e.key !== triggerKey) {
         return
       }
+      triggerKeyTappedTimeoutId = setTimeout(() => {
+        state.keyKeyPressedCount = 0
+      }, millisecondsThresholdForTriggerTaps)
       state.keyKeyPressedCount++
       if (state.keyKeyPressedCount === 2) {
+        state.keyKeyPressedCount = 0
         toggleActive()
       }
     })
@@ -149,6 +157,9 @@ const Extension = function() {
 
   const updateMatches = (str) => {
     const firstCharacter = str.substr(0, 1)
+    if (!firstCharacter) {
+      return
+    }
     switch (firstCharacter) {
       case ':':
         state.matchingElements = Array.from(document.querySelectorAll(str.substr(1, str.length)))
