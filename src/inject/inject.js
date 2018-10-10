@@ -131,7 +131,7 @@ const Extension = function () {
 
   const listenToPromptEvents = () => {
     promptElement.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === 'Tab') {
+      if (e.key === 'Enter' || e.key === 'Tab' || !isNaN(Number(e.key))) {
         e.preventDefault()
       }
       if (e.key === 'Tab') {
@@ -141,6 +141,10 @@ const Extension = function () {
       if (e.key === 'Enter') {
         onEnter()
         return
+      }
+      if (!isNaN(Number(e.key))) {
+        state.matchIndex = Number(e.key)
+        onEnter()
       }
     })
 
