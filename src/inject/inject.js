@@ -201,8 +201,6 @@ const Extension = function () {
     Array.from(elementsToLookIn).forEach(element => {
       if (!elementShouldBeSkipped(element)) {
         if (elementsContentMatch(element, str)) {
-          console.log(element)
-          console.log('----')
           matches.push(element)
         }
       }
