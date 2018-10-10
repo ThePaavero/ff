@@ -1,65 +1,77 @@
 #zz-wrapper {
-    margin: 0;
-    border-radius: 0;
-    border: none;
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100vw;
-    height: 30px;
-    line-height: 30px;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #fff;
-    padding: 3px 15px;
-    box-sizing: border-box;
-    display: none;
-    z-index: 99999999;
-    text-align: left;
-    font-family: Consolas, Monospaced, sans-serif !important;
-    font-size: 13px;
+  margin: 0;
+  border-radius: 0;
+  border: none;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 30px;
+  line-height: 30px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 3px 15px;
+  box-sizing: border-box;
+  display: none;
+  z-index: 99999999;
+  text-align: left;
+  font-family: Consolas, Monospaced, sans-serif !important;
+  font-size: 13px;
 }
 
 #zz-wrapper.active {
-    display: flex;
+  display: flex;
 }
 
 #zz-prompt {
-    flex-basis: 80%;
-    height: 25px;
-    line-height: 25px !important;
-    background-color: #000;
-    padding: 2px;
+  flex-basis: 80%;
+  height: 25px;
+  line-height: 25px !important;
+  background-color: #000;
+  padding: 2px;
 }
 
 #zz-prompt:active,
 #zz-prompt:focus {
-    outline: solid 1px orange;
+  outline: solid 1px orange;
 }
 
 .zz-match {
-    box-shadow: inset 0 0 0 2px rgba(255, 0, 50, 0.2);
+  box-shadow: inset 0 0 0 2px rgba(255, 0, 50, 0.2);
+}
+
+input[type=submit].zz-match,
+button.zz-match,
+a.zz-match {
+  box-shadow: inset 0 0 0 2px rgba(31, 255, 0, 0.75);
 }
 
 .zz-current-index {
-    box-shadow: inset 0 0 0 5px rgba(255, 0, 50, 0.5);
+  box-shadow: inset 0 0 0 5px rgba(255, 0, 50, 0.5);
+}
+
+input[type=submit].zz-current-index,
+button.zz-current-index,
+a.zz-current-index {
+  box-shadow: inset 0 0 0 5px rgba(31, 255, 0, 0.75);
 }
 
 .zz-label {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 15px;
-    height: 15px;
-    line-height: 15px;
-    font-size: 10px;
-    background-color: rgba(255, 0, 50, 1);
-    text-align: center;
-    color: #000;
-    transform: translateX(-2px) translateY(-2px);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 15px;
+  height: 15px;
+  line-height: 15px;
+  font-size: 10px;
+  background-color: rgba(255, 0, 50, 1);
+  text-align: center;
+  color: #000;
+  transform: translateX(-2px) translateY(-2px);
 }
 
 #zz-infoElement {
-    flex-basis: 20%;
-    text-align: right;
+  flex-basis: 20%;
+  text-align: right;
 }
