@@ -251,6 +251,20 @@ const Extension = function () {
       document.body.appendChild(label)
       counter++
     })
+    if (state.matchingElements.length > 0) {
+      scrollToMatchWithCurrentIndex()
+    }
+  }
+
+  const scrollToMatchWithCurrentIndex = () => {
+    const highlightedElement = document.querySelector('.ff-current-index')
+    if (!highlightedElement) {
+      return
+    }
+    highlightedElement.scrollIntoView({
+      block: 'center',
+      behavior: 'smooth'
+    })
   }
 
   const renderInfo = () => {
