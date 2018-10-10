@@ -8,7 +8,7 @@
 5. Paste the path to this extension (or navigate to it via the GUI)
 
 ## Usage
-* Doubletap `z` on your keyboard to open up the prompt bar.
+* Doubletap `f` on your keyboard to open up the prompt bar.
 * Start typing for searching.
 * Start your command with a `:` to use CSS selectors instead of text search.
 * Tab your way to the one element you want to click.

@@ -1,8 +1,8 @@
 const Extension = function () {
 
-  const triggerKey = 'z'
+  const triggerKey = 'f'
   const millisecondsThresholdForTriggerTaps = 500
-  const godSelectors = 'body *:not(#zz-prompt)'
+  const godSelectors = 'body *:not(#ff-prompt)'
   // const godSelectors = 'a, button, input, .btn, .button'
 
   const state = {
@@ -26,9 +26,9 @@ const Extension = function () {
       state.matchingElements = []
     }
     Array.from(document.querySelectorAll('body *')).forEach(element => {
-      element.classList.remove(...['zz-match', 'zz-current-index'])
+      element.classList.remove(...['ff-match', 'ff-current-index'])
     })
-    Array.from(document.querySelectorAll('.zz-label')).forEach(element => {
+    Array.from(document.querySelectorAll('.ff-label')).forEach(element => {
       element.parentElement.removeChild(element)
     })
   }
@@ -41,13 +41,13 @@ const Extension = function () {
 
   const createInfoElement = () => {
     infoElement = document.createElement('div')
-    infoElement.id = 'zz-infoElement'
+    infoElement.id = 'ff-infoElement'
     wrapperElement.appendChild(infoElement)
   }
 
   const createPromptElement = () => {
     promptElement = document.createElement('div')
-    promptElement.id = 'zz-prompt'
+    promptElement.id = 'ff-prompt'
     promptElement.setAttribute('contenteditable', true)
     wrapperElement.appendChild(promptElement)
     document.body.appendChild(wrapperElement)
@@ -55,7 +55,7 @@ const Extension = function () {
 
   const createWrapperElement = () => {
     wrapperElement = document.createElement('div')
-    wrapperElement.id = 'zz-wrapper'
+    wrapperElement.id = 'ff-wrapper'
     wrapperElement.addEventListener('blur', e => {
       if (state.active) {
         toggleActive()
@@ -238,14 +238,14 @@ const Extension = function () {
   const renderMatches = () => {
     let counter = 1
     state.matchingElements.forEach(element => {
-      element.classList.add('zz-match')
+      element.classList.add('ff-match')
       if (counter === state.matchIndex) {
-        element.classList.add('zz-current-index')
+        element.classList.add('ff-current-index')
       }
       const label = document.createElement('div')
       const coordinates = element.getBoundingClientRect()
       label.innerText = counter
-      label.className = 'zz-label'
+      label.className = 'ff-label'
       label.style.top = coordinates.y + 'px'
       label.style.left = coordinates.x + 'px'
       document.body.appendChild(label)
