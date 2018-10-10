@@ -79,6 +79,11 @@ const Extension = function () {
   }
 
   const listenToGlobalTriggers = () => {
+    document.body.addEventListener('click', e => {
+      if (state.active && e.target !== wrapperElement && e.target !== promptElement) {
+        toggleActive()
+      }
+    })
     document.addEventListener('keyup', e => {
       if (e.key !== triggerKey) {
         return
