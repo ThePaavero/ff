@@ -65,7 +65,8 @@ const Extension = function () {
 
   const reactToTriggerKey = () => {
     // If we're typing into our prompt, ignore these triggers.
-    if (document.activeElement === promptElement) {
+    const ignoreIfTag = ['INPUT', 'TEXTAREA']
+    if (document.activeElement === promptElement || ignoreIfTag.indexOf(document.activeElement.nodeName) > -1) {
       return
     }
     // Not focused on prompt, go ahead and react.
