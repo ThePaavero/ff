@@ -1,7 +1,10 @@
 # Chrome extension for miscellaneous keyboard command driven functions.
 
 ## Install
-Install the extension.
+1. Go to `chrome://extensions`
+2. Turn on "Developer mode" in the upper right corner
+3. Click "Load unpacked"
+4. Paste the path to this extension (or navigate to it via the GUI)
 
 ## Usage
 * Doubletap `z` on your keyboard to open up the prompt bar.
