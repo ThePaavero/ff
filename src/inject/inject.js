@@ -179,7 +179,15 @@ const Extension = function () {
     }
     switch (firstCharacter) {
       case ':':
-        state.matchingElements = Array.from(document.querySelectorAll(str.substr(1, str.length)))
+        const selectorString = str.substr(1, str.length)
+        if (selectorString.trim() === '') {
+          return
+        }
+        try {
+          state.matchingElements = Array.from(document.querySelectorAll(selectorString))
+        } catch (e) {
+          // ... Do nothing.
+        }
         break
       default:
         state.matchingElements = doTextSearch(str)
