@@ -2,6 +2,8 @@ const Extension = function () {
 
   const triggerKey = 'z'
   const millisecondsThresholdForTriggerTaps = 500
+  // const godSelectors = 'body *:not(#zz-prompt)'
+  const godSelectors = 'a, button, input, .btn, .button'
 
   const state = {
     active: false,
@@ -161,14 +163,21 @@ const Extension = function () {
   }
 
   const elementsContentMatch = (element, str) => {
+    const matchAgainst = str.toLowerCase()
     const textNodes = Array.from(element.childNodes).filter(child => child.nodeType === Node.TEXT_NODE)
     let match = false
     textNodes.forEach(textNode => {
       const textContent = textNode.textContent
-      if (textContent.toLowerCase().indexOf(str.toLowerCase()) > -1) {
+      if (textContent.toLowerCase().indexOf(matchAgainst) > -1) {
         match = true
       }
     })
+    if (element.value && element.value.indexOf(matchAgainst) > -1) {
+      match = true
+    }
+    if (element.placeholder && element.placeholder.indexOf(matchAgainst) > -1) {
+      match = true
+    }
     return match
   }
 
@@ -196,7 +205,7 @@ const Extension = function () {
   }
 
   const doTextSearch = (str) => {
-    const elementsToLookIn = document.querySelectorAll('body *:not(#zz-prompt)')
+    const elementsToLookIn = document.querySelectorAll(godSelectors)
     const matches = []
     Array.from(elementsToLookIn).forEach(element => {
       if (!elementShouldBeSkipped(element)) {
