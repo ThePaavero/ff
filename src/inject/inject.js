@@ -152,7 +152,6 @@ const Extension = function () {
           state.numberSequenceInMemory = Number(e.key)
         }
         state.numberTimeoutId = setTimeout(() => {
-          console.log(state.numberSequenceInMemory)
           state.matchIndex = state.numberSequenceInMemory
           state.numberSequenceInMemory = null
           if (state.numberTimeoutId) {
