@@ -246,8 +246,8 @@ const Extension = function () {
       const coordinates = element.getBoundingClientRect()
       label.innerText = counter
       label.className = 'ff-label'
-      label.style.top = coordinates.y + 'px'
-      label.style.left = coordinates.x + 'px'
+      label.style.top = (coordinates.y + window.scrollY) + 'px'
+      label.style.left = (coordinates.x + window.scrollX) + 'px'
       document.body.appendChild(label)
       counter++
     })
