@@ -133,7 +133,7 @@ const Extension = function () {
 
   const listenToPromptEvents = () => {
     promptElement.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === 'Tab' || !isNaN(Number(e.key))) {
+      if (e.key === 'Enter' || e.key === 'Tab' || (!isNaN(Number(e.key)) && Number(e.key) !== 0)) {
         e.preventDefault()
       }
       if (e.key === 'Tab') {
