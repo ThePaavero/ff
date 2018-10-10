@@ -157,7 +157,7 @@ const Extension = function () {
   }
 
   const elementShouldBeSkipped = (element) => {
-    return typeof element.innerText === 'undefined' || element.hidden
+    return typeof element.innerText === 'undefined' || element.hidden || element.style.display === 'none' || element.offsetParent === null
   }
 
   const elementsContentMatch = (element, str) => {
@@ -201,6 +201,8 @@ const Extension = function () {
     Array.from(elementsToLookIn).forEach(element => {
       if (!elementShouldBeSkipped(element)) {
         if (elementsContentMatch(element, str)) {
+          console.log(element)
+          console.log('----')
           matches.push(element)
         }
       }
