@@ -59,22 +59,31 @@ const Extension = function () {
     })
   }
 
+  const reactToTriggerKey = () => {
+    // If we're typing into our prompt, ignore these triggers.
+    if (document.activeElement === promptElement) {
+      return
+    }
+    // Not focused on prompt, go ahead and react.
+    if (state.triggerKeyTappedTimeoutId) {
+      clearTimeout(state.triggerKeyTappedTimeoutId)
+    }
+    state.triggerKeyTappedTimeoutId = setTimeout(() => {
+      state.keyKeyPressedCount = 0
+    }, millisecondsThresholdForTriggerTaps)
+    state.keyKeyPressedCount++
+    if (state.keyKeyPressedCount === 2) {
+      state.keyKeyPressedCount = 0
+      toggleActive()
+    }
+  }
+
   const listenToGlobalTriggers = () => {
     document.addEventListener('keyup', e => {
       if (e.key !== triggerKey) {
         return
       }
-      if (state.triggerKeyTappedTimeoutId) {
-        clearTimeout(state.triggerKeyTappedTimeoutId)
-      }
-      state.triggerKeyTappedTimeoutId = setTimeout(() => {
-        state.keyKeyPressedCount = 0
-      }, millisecondsThresholdForTriggerTaps)
-      state.keyKeyPressedCount++
-      if (state.keyKeyPressedCount === 2) {
-        state.keyKeyPressedCount = 0
-        toggleActive()
-      }
+      reactToTriggerKey()
     })
 
     document.addEventListener('keydown', e => {
