@@ -11,8 +11,10 @@ const Extension = function () {
     currentCommand: '',
     matchIndex: 1,
     triggerKeyTappedTimeoutId: null,
+    numberTimeoutId: null,
     matchingElements: [],
     shiftPressed: false,
+    numberSequenceInMemory: null,
   }
 
   let promptElement = null
@@ -143,8 +145,21 @@ const Extension = function () {
         return
       }
       if (!isNaN(Number(e.key))) {
-        state.matchIndex = Number(e.key)
-        onEnter()
+        if (state.numberSequenceInMemory) {
+          // Concat as strings, but form a number.
+          state.numberSequenceInMemory = Number(state.numberSequenceInMemory.toString() + e.key.toString())
+        } else {
+          state.numberSequenceInMemory = Number(e.key)
+        }
+        state.numberTimeoutId = setTimeout(() => {
+          console.log(state.numberSequenceInMemory)
+          state.matchIndex = state.numberSequenceInMemory
+          state.numberSequenceInMemory = null
+          if (state.numberTimeoutId) {
+            clearTimeout(state.numberTimeoutId)
+          }
+          onEnter()
+        }, 500)
       }
     })
 
