@@ -2,8 +2,8 @@ const Extension = function () {
 
   const triggerKey = 'z'
   const millisecondsThresholdForTriggerTaps = 500
-  // const godSelectors = 'body *:not(#zz-prompt)'
-  const godSelectors = 'a, button, input, .btn, .button'
+  const godSelectors = 'body *:not(#zz-prompt)'
+  // const godSelectors = 'a, button, input, .btn, .button'
 
   const state = {
     active: false,
