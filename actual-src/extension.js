@@ -1,4 +1,3 @@
-(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 const state = require('./state')
 const listenToGlobalTriggers = require('./globalTriggers')
 
@@ -305,65 +304,3 @@ const Extension = function() {
 }
 
 module.exports = Extension
-
-},{"./globalTriggers":2,"./state":4}],2:[function(require,module,exports){
-const listenToGlobalTriggers = () => {
-
-  const init = (state, wrapperElement, promptElement, toggleActive, triggerKey, reactToTriggerKey) => {
-    document.body.addEventListener('click', e => {
-      if (state.active && e.target !== wrapperElement && e.target !== promptElement) {
-        toggleActive()
-      }
-    })
-    document.addEventListener('keyup', e => {
-      if (e.key !== triggerKey) {
-        return
-      }
-      reactToTriggerKey()
-    })
-
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Shift') {
-        state.shiftPressed = true
-      }
-    })
-    document.addEventListener('keyup', e => {
-      if (e.key === 'Shift') {
-        state.shiftPressed = false
-      }
-    })
-  }
-
-  return {init}
-}
-
-module.exports = listenToGlobalTriggers()
-
-},{}],3:[function(require,module,exports){
-const Extension = require('./extension')
-chrome.extension.sendMessage({}, () => {
-  const readyStateCheckInterval = setInterval(() => {
-    if (document.readyState === 'complete') {
-      clearInterval(readyStateCheckInterval)
-      const app = new Extension()
-      app.init()
-    }
-  }, 10)
-})
-
-},{"./extension":1}],4:[function(require,module,exports){
-const state = {
-  active: false,
-  keyKeyPressedCount: 0,
-  currentCommand: '',
-  matchIndex: 1,
-  triggerKeyTappedTimeoutId: null,
-  numberTimeoutId: null,
-  matchingElements: [],
-  shiftPressed: false,
-  numberSequenceInMemory: null,
-}
-
-module.exports = state
-
-},{}]},{},[3]);

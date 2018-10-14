@@ -5,9 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch-js":"watchify actual-src/main.js -o src/inject/inject.js",
-    "watch-scss":"node-sass --watch actual-src/styles.scss -o src/inject",
-    "dev": "npm run watch-js && npm run watch-scss"
+    "watch-js": "watchify actual-src/main.js -o src/inject/inject.js",
+    "watch-scss": "node-sass --watch actual-src/styles.scss -o src/inject"
   },
   "repository": {
     "type": "git",
@@ -23,6 +22,5 @@
     "node-sass": "^4.9.3",
     "watchify": "^3.11.0"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
