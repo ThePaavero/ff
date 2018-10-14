@@ -3,6 +3,7 @@ const availableCommands = {
   stfuCommand: require('./commands/stfuCommand'),
   toggleCssCommand: require('./commands/toggleCssCommand'),
   rootDomainCommand: require('./commands/rootDomainCommand'),
+  showSourceCommand: require('./commands/showSourceCommand'),
 }
 
 const loadedCommands = []

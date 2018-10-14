@@ -4,6 +4,7 @@ const availableCommands = {
   stfuCommand: require('./commands/stfuCommand'),
   toggleCssCommand: require('./commands/toggleCssCommand'),
   rootDomainCommand: require('./commands/rootDomainCommand'),
+  showSourceCommand: require('./commands/showSourceCommand'),
 }
 
 const loadedCommands = []
@@ -40,7 +41,7 @@ const command = () => {
 
 module.exports = command()
 
-},{"./commands/rootDomainCommand":2,"./commands/showClassesCommand":3,"./commands/stfuCommand":4,"./commands/toggleCssCommand":5}],2:[function(require,module,exports){
+},{"./commands/rootDomainCommand":2,"./commands/showClassesCommand":3,"./commands/showSourceCommand":4,"./commands/stfuCommand":5,"./commands/toggleCssCommand":6}],2:[function(require,module,exports){
 const rootDomainCommand = () => {
 
   const getCommand = () => {
@@ -105,6 +106,30 @@ const showClassesCommand = () => {
 module.exports = showClassesCommand()
 
 },{}],4:[function(require,module,exports){
+const showSourceCommand = () => {
+
+  const getCommand = () => {
+    return 'source'
+  }
+
+  const run = (state) => {
+    window.location.href = 'view-source:' + window.location.href
+  }
+
+  const getMessage = () => {
+    return ''
+  }
+
+  return {
+    getCommand,
+    run,
+    getMessage
+  }
+}
+
+module.exports = showSourceCommand()
+
+},{}],5:[function(require,module,exports){
 const stfuCommand = () => {
 
   const getCommand = () => {
@@ -130,7 +155,7 @@ const stfuCommand = () => {
 
 module.exports = stfuCommand()
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 const toggleCssCommand = () => {
 
   const myDisablingPrefix = 'FF-CSS-TOGGLE_'
@@ -166,7 +191,7 @@ const toggleCssCommand = () => {
 
 module.exports = toggleCssCommand()
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 const state = require('./state')
 const command = require('./command')
 const listenToGlobalTriggers = require('./globalTriggers')
@@ -556,7 +581,7 @@ const Extension = function() {
 
 module.exports = Extension
 
-},{"./command":1,"./globalTriggers":7,"./state":9}],7:[function(require,module,exports){
+},{"./command":1,"./globalTriggers":8,"./state":10}],8:[function(require,module,exports){
 const listenToGlobalTriggers = () => {
 
   const init = (state, toggleActive, reactToTriggerKey) => {
@@ -589,7 +614,7 @@ const listenToGlobalTriggers = () => {
 
 module.exports = listenToGlobalTriggers()
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 const Extension = require('./extension')
 chrome.extension.sendMessage({}, () => {
   const readyStateCheckInterval = setInterval(() => {
@@ -601,7 +626,7 @@ chrome.extension.sendMessage({}, () => {
   }, 10)
 })
 
-},{"./extension":6}],9:[function(require,module,exports){
+},{"./extension":7}],10:[function(require,module,exports){
 const state = {
   triggerKey: 'f',
   active: false,
@@ -623,4 +648,4 @@ const state = {
 
 module.exports = state
 
-},{}]},{},[8]);
+},{}]},{},[9]);
