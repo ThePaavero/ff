@@ -2,6 +2,7 @@
 const availableCommands = {
   showClassesCommand: require('./commands/showClassesCommand'),
   stfuCommand: require('./commands/stfuCommand'),
+  toggleCssCommand: require('./commands/toggleCssCommand'),
 }
 
 const loadedCommands = []
@@ -38,7 +39,7 @@ const command = () => {
 
 module.exports = command()
 
-},{"./commands/showClassesCommand":2,"./commands/stfuCommand":3}],2:[function(require,module,exports){
+},{"./commands/showClassesCommand":2,"./commands/stfuCommand":3,"./commands/toggleCssCommand":4}],2:[function(require,module,exports){
 const showClassesCommand = () => {
 
   const getCommand = () => {
@@ -104,6 +105,42 @@ const stfuCommand = () => {
 module.exports = stfuCommand()
 
 },{}],4:[function(require,module,exports){
+const toggleCssCommand = () => {
+
+  const myDisablingPrefix = 'FF-CSS-TOGGLE_'
+
+  let cssIsOn = true
+
+  const getCommand = () => {
+    return 'css'
+  }
+
+  const run = (state) => {
+    const cssElementsAsArray = Array.from(document.querySelectorAll('[rel="stylesheet"]'))
+    cssIsOn = !cssIsOn
+    cssElementsAsArray.forEach(element => {
+      if (cssIsOn) {
+        element.href = element.href.replace(myDisablingPrefix, '')
+      } else {
+        element.href += myDisablingPrefix
+      }
+    })
+  }
+
+  const getMessage = () => {
+    return 'CSS toggled'
+  }
+
+  return {
+    getCommand,
+    run,
+    getMessage
+  }
+}
+
+module.exports = toggleCssCommand()
+
+},{}],5:[function(require,module,exports){
 const state = require('./state')
 const command = require('./command')
 const listenToGlobalTriggers = require('./globalTriggers')
@@ -485,7 +522,7 @@ const Extension = function() {
 
 module.exports = Extension
 
-},{"./command":1,"./globalTriggers":5,"./state":7}],5:[function(require,module,exports){
+},{"./command":1,"./globalTriggers":6,"./state":8}],6:[function(require,module,exports){
 const listenToGlobalTriggers = () => {
 
   const init = (state, toggleActive, reactToTriggerKey) => {
@@ -518,7 +555,7 @@ const listenToGlobalTriggers = () => {
 
 module.exports = listenToGlobalTriggers()
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 const Extension = require('./extension')
 chrome.extension.sendMessage({}, () => {
   const readyStateCheckInterval = setInterval(() => {
@@ -530,7 +567,7 @@ chrome.extension.sendMessage({}, () => {
   }, 10)
 })
 
-},{"./extension":4}],7:[function(require,module,exports){
+},{"./extension":5}],8:[function(require,module,exports){
 const state = {
   triggerKey: 'f',
   active: false,
@@ -552,4 +589,4 @@ const state = {
 
 module.exports = state
 
-},{}]},{},[6]);
+},{}]},{},[7]);

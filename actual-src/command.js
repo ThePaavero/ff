@@ -1,6 +1,7 @@
 const availableCommands = {
   showClassesCommand: require('./commands/showClassesCommand'),
   stfuCommand: require('./commands/stfuCommand'),
+  toggleCssCommand: require('./commands/toggleCssCommand'),
 }
 
 const loadedCommands = []
