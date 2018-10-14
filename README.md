@@ -13,3 +13,7 @@
 * Start your command with a `:` to use CSS selectors instead of text search.
 * Tab your way to the one element you want to click -> Press enter to click the selected element.
 * Alternatively, type the corresponding match number to click the element instantly.
+
+### Todos
+- [ ] PgUp and pgDown
+- [ ] Come up with "commands"

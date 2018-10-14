@@ -25,7 +25,7 @@
 }
 
 #ff-prompt {
-  flex-basis: 80%;
+  flex-basis: 50%;
   height: 25px;
   line-height: 25px !important;
   background-color: #000;
@@ -72,6 +72,6 @@ a.ff-current-index {
 }
 
 #ff-infoElement {
-  flex-basis: 20%;
+  flex-basis: 50%;
   text-align: right;
 }
