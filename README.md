@@ -18,8 +18,8 @@
 ## Commands
 Start your string with `>` and enter a command.
 
-###Available commands
-* `show-classes`
+####Available commands
+- `show-classes` (this is just a test for creating "commands" for now)
 
 ## Todos
 - [x] Don't block normal use of PgUp and pgDown to scroll the site
