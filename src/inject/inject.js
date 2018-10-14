@@ -113,6 +113,7 @@ const showSourceCommand = () => {
   }
 
   const run = (state) => {
+    // @todo Ha, this doesn't work anymore.
     window.location.href = 'view-source:' + window.location.href
   }
 
