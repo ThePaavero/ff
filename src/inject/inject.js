@@ -3,6 +3,7 @@ const availableCommands = {
   showClassesCommand: require('./commands/showClassesCommand'),
   stfuCommand: require('./commands/stfuCommand'),
   toggleCssCommand: require('./commands/toggleCssCommand'),
+  rootDomainCommand: require('./commands/rootDomainCommand'),
 }
 
 const loadedCommands = []
@@ -39,7 +40,32 @@ const command = () => {
 
 module.exports = command()
 
-},{"./commands/showClassesCommand":2,"./commands/stfuCommand":3,"./commands/toggleCssCommand":4}],2:[function(require,module,exports){
+},{"./commands/rootDomainCommand":2,"./commands/showClassesCommand":3,"./commands/stfuCommand":4,"./commands/toggleCssCommand":5}],2:[function(require,module,exports){
+const rootDomainCommand = () => {
+
+  const getCommand = () => {
+    return 'root'
+  }
+
+  const run = (state) => {
+    // https://stackoverflow.com/questions/6941533/get-protocol-domain-and-port-from-url
+    window.location.href = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '')
+  }
+
+  const getMessage = () => {
+    return ''
+  }
+
+  return {
+    getCommand,
+    run,
+    getMessage
+  }
+}
+
+module.exports = rootDomainCommand()
+
+},{}],3:[function(require,module,exports){
 const showClassesCommand = () => {
 
   const getCommand = () => {
@@ -78,7 +104,7 @@ const showClassesCommand = () => {
 
 module.exports = showClassesCommand()
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 const stfuCommand = () => {
 
   const getCommand = () => {
@@ -104,7 +130,7 @@ const stfuCommand = () => {
 
 module.exports = stfuCommand()
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 const toggleCssCommand = () => {
 
   const myDisablingPrefix = 'FF-CSS-TOGGLE_'
@@ -140,7 +166,7 @@ const toggleCssCommand = () => {
 
 module.exports = toggleCssCommand()
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 const state = require('./state')
 const command = require('./command')
 const listenToGlobalTriggers = require('./globalTriggers')
@@ -263,6 +289,7 @@ const Extension = function() {
       return
     }
     const currentMatchingElement = getCurrentMatchingElement()
+    currentMatchingElement.focus()
     currentMatchingElement.click()
     resetAllMatches()
     toggleActive()
@@ -522,7 +549,7 @@ const Extension = function() {
 
 module.exports = Extension
 
-},{"./command":1,"./globalTriggers":6,"./state":8}],6:[function(require,module,exports){
+},{"./command":1,"./globalTriggers":7,"./state":9}],7:[function(require,module,exports){
 const listenToGlobalTriggers = () => {
 
   const init = (state, toggleActive, reactToTriggerKey) => {
@@ -555,7 +582,7 @@ const listenToGlobalTriggers = () => {
 
 module.exports = listenToGlobalTriggers()
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 const Extension = require('./extension')
 chrome.extension.sendMessage({}, () => {
   const readyStateCheckInterval = setInterval(() => {
@@ -567,7 +594,7 @@ chrome.extension.sendMessage({}, () => {
   }, 10)
 })
 
-},{"./extension":5}],8:[function(require,module,exports){
+},{"./extension":6}],9:[function(require,module,exports){
 const state = {
   triggerKey: 'f',
   active: false,
@@ -589,4 +616,4 @@ const state = {
 
 module.exports = state
 
-},{}]},{},[7]);
+},{}]},{},[8]);

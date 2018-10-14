@@ -120,6 +120,7 @@ const Extension = function() {
       return
     }
     const currentMatchingElement = getCurrentMatchingElement()
+    currentMatchingElement.focus()
     currentMatchingElement.click()
     resetAllMatches()
     toggleActive()
