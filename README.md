@@ -16,4 +16,5 @@
 
 ### Todos
 - [x] Don't block normal use of PgUp and pgDown to scroll the site
+- [x] Automatically scroll to matching element that has current "tab index"
 - [ ] Come up with "commands"
