@@ -1,19 +1,18 @@
-const availableCommands = [
-  'showClassesCommand',
-  'stfuCommand',
-]
+const availableCommands = {
+  showClassesCommand: require('./commands/showClassesCommand'),
+  stfuCommand: require('./commands/stfuCommand'),
+}
 
 const loadedCommands = []
 
-availableCommands.forEach(c => {
-  const program = require('./commands/' + c)
+Object.keys(availableCommands).forEach(c => {
+  console.log('Loading command "' + c + '"')
+  const program = availableCommands[c]
   loadedCommands.push({
     program,
     commandString: program.getCommand()
   })
 })
-
-const showClassesCommand = require('./commands/showClassesCommand')
 
 const command = () => {
 
