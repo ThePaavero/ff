@@ -1,4 +1,5 @@
 const state = {
+  triggerKey: 'f',
   active: false,
   keyKeyPressedCount: 0,
   currentCommand: '',
@@ -8,6 +9,9 @@ const state = {
   matchingElements: [],
   shiftPressed: false,
   numberSequenceInMemory: null,
+  wrapperElement: null,
+  promptElement: null,
+  infoElement: null,
 }
 
 module.exports = state

@@ -9,10 +9,6 @@ const Extension = function() {
   const godSelectors = 'body *:not(#ff-prompt):not(#ff-wrapper)'
   // const godSelectors = 'a, button, input, .btn, .button'
 
-  let promptElement = null
-  let wrapperElement = null
-  let infoElement = null
-
   const resetAllMatches = (resetData = true) => {
     if (resetData) {
       state.matchingElements = []
@@ -32,24 +28,24 @@ const Extension = function() {
   }
 
   const createInfoElement = () => {
-    infoElement = document.createElement('div')
-    infoElement.id = 'ff-infoElement'
-    wrapperElement.appendChild(infoElement)
+    state.infoElement = document.createElement('div')
+    state.infoElement.id = 'ff-infoElement'
+    state.wrapperElement.appendChild(state.infoElement)
   }
 
   const createPromptElement = () => {
-    promptElement = document.createElement('div')
-    promptElement.id = 'ff-prompt'
-    promptElement.setAttribute('contenteditable', true)
-    promptElement.setAttribute('spellcheck', false)
-    wrapperElement.appendChild(promptElement)
-    document.body.appendChild(wrapperElement)
+    state.promptElement = document.createElement('div')
+    state.promptElement.id = 'ff-prompt'
+    state.promptElement.setAttribute('contenteditable', true)
+    state.promptElement.setAttribute('spellcheck', false)
+    state.wrapperElement.appendChild(state.promptElement)
+    document.body.appendChild(state.wrapperElement)
   }
 
   const createWrapperElement = () => {
-    wrapperElement = document.createElement('div')
-    wrapperElement.id = 'ff-wrapper'
-    wrapperElement.addEventListener('blur', e => {
+    state.wrapperElement = document.createElement('div')
+    state.wrapperElement.id = 'ff-wrapper'
+    state.wrapperElement.addEventListener('blur', e => {
       if (state.active) {
         toggleActive()
       }
@@ -59,7 +55,7 @@ const Extension = function() {
   const reactToTriggerKey = () => {
     // If we're typing into our prompt (or other inputs/textareas), ignore these triggers.
     const ignoreIfTag = ['INPUT', 'TEXTAREA']
-    if (document.activeElement === promptElement || ignoreIfTag.indexOf(document.activeElement.nodeName) > -1) {
+    if (document.activeElement === state.promptElement || ignoreIfTag.indexOf(document.activeElement.nodeName) > -1) {
       return
     }
     // Not focused on prompt, go ahead and react.
@@ -108,10 +104,10 @@ const Extension = function() {
     // so that the browser will apply the Page Up/Down onto the document itself instead of our prompt.
     // Then, immediately after, return our contenteditable attribute to true and refocus on the prompt again.
     if (e.key === 'PageDown' || e.key === 'PageUp') {
-      promptElement.setAttribute('contenteditable', false)
+      state.promptElement.setAttribute('contenteditable', false)
       setTimeout(() => {
-        promptElement.setAttribute('contenteditable', true)
-        promptElement.focus()
+        state.promptElement.setAttribute('contenteditable', true)
+        state.promptElement.focus()
       }, 1)
       return true
     }
@@ -119,7 +115,7 @@ const Extension = function() {
   }
 
   const listenToPromptEvents = () => {
-    promptElement.addEventListener('keydown', e => {
+    state.promptElement.addEventListener('keydown', e => {
       if (handlePageUpAndDownWhileInFocus(e)) {
         return
       }
@@ -160,11 +156,11 @@ const Extension = function() {
       'PageDown',
       'PageUp',
     ];
-    promptElement.addEventListener('keyup', e => {
+    state.promptElement.addEventListener('keyup', e => {
       if (e.key === 'Escape') {
         toggleActive()
       }
-      state.currentCommand = promptElement.innerText.trim()
+      state.currentCommand = state.promptElement.innerText.trim()
       if (state.currentCommand === '') {
         return
       }
@@ -280,7 +276,7 @@ const Extension = function() {
   }
 
   const renderInfo = () => {
-    infoElement.innerHTML = `${state.matchingElements.length} matches ${state.matchingElements.length > 1 ? '(' + state.matchIndex + ')' : ''}`
+    state.infoElement.innerHTML = `${state.matchingElements.length} matches ${state.matchingElements.length > 1 ? '(' + state.matchIndex + ')' : ''}`
   }
 
   const tick = (cmd) => {
@@ -294,18 +290,18 @@ const Extension = function() {
   const toggleActive = () => {
     state.keyKeyPressedCount = 0
     state.active = !state.active
-    wrapperElement.classList.toggle('active')
+    state.wrapperElement.classList.toggle('active')
     if (state.active) {
-      promptElement.focus()
+      state.promptElement.focus()
     } else {
       state.currentCommand = ''
-      promptElement.innerText = state.currentCommand
+      state.promptElement.innerText = state.currentCommand
       resetAllMatches()
     }
   }
 
   const init = () => {
-    listenToGlobalTriggers.init(state, wrapperElement, promptElement, toggleActive, triggerKey, reactToTriggerKey)
+    listenToGlobalTriggers.init(state, toggleActive, reactToTriggerKey)
     createElements()
     listenToPromptEvents()
     console.log('FF is active.')
@@ -321,14 +317,14 @@ module.exports = Extension
 },{"./globalTriggers":2,"./state":4}],2:[function(require,module,exports){
 const listenToGlobalTriggers = () => {
 
-  const init = (state, wrapperElement, promptElement, toggleActive, triggerKey, reactToTriggerKey) => {
+  const init = (state, toggleActive, reactToTriggerKey) => {
     document.body.addEventListener('click', e => {
-      if (state.active && e.target !== wrapperElement && e.target !== promptElement) {
+      if (state.active && e.target !== state.wrapperElement && e.target !== state.promptElement) {
         toggleActive()
       }
     })
     document.addEventListener('keyup', e => {
-      if (e.key !== triggerKey) {
+      if (e.key !== state.triggerKey) {
         return
       }
       reactToTriggerKey()
@@ -365,6 +361,7 @@ chrome.extension.sendMessage({}, () => {
 
 },{"./extension":1}],4:[function(require,module,exports){
 const state = {
+  triggerKey: 'f',
   active: false,
   keyKeyPressedCount: 0,
   currentCommand: '',
@@ -374,6 +371,9 @@ const state = {
   matchingElements: [],
   shiftPressed: false,
   numberSequenceInMemory: null,
+  wrapperElement: null,
+  promptElement: null,
+  infoElement: null,
 }
 
 module.exports = state

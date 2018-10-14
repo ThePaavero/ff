@@ -1,13 +1,13 @@
 const listenToGlobalTriggers = () => {
 
-  const init = (state, wrapperElement, promptElement, toggleActive, triggerKey, reactToTriggerKey) => {
+  const init = (state, toggleActive, reactToTriggerKey) => {
     document.body.addEventListener('click', e => {
-      if (state.active && e.target !== wrapperElement && e.target !== promptElement) {
+      if (state.active && e.target !== state.wrapperElement && e.target !== state.promptElement) {
         toggleActive()
       }
     })
     document.addEventListener('keyup', e => {
-      if (e.key !== triggerKey) {
+      if (e.key !== state.triggerKey) {
         return
       }
       reactToTriggerKey()
