@@ -71,7 +71,29 @@ a.ff-current-index {
   transform: translateX(-2px) translateY(-2px);
 }
 
+.ff-label:before {
+  content: "➜";
+  color: rgba(255, 0, 50, 1);
+  position: absolute;
+  left: -20px;
+  transform: rotate(45deg);
+  top: -15px;
+  font-size: 20px;
+  opacity: 1;
+}
+
+.ff-label.active:before {
+  content: "➜";
+  color: rgba(255, 0, 50, 1);
+  position: absolute;
+  left: -40px;
+  transform: rotate(45deg);
+  top: -20px;
+  font-size: 40px;
+}
+
 #ff-infoElement {
   flex-basis: 50%;
-  text-align: right;
+  text-align: left;
+  padding-left: 20px;
 }
