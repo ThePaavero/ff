@@ -188,6 +188,8 @@ const Extension = function() {
       }
       state.promptString = state.promptElement.innerText.trim()
       if (state.promptString === '') {
+        resetAllMatches()
+        state.promptElement.className = ''
         return
       }
       if (!doNotTickOnKeys.includes(e.key)) {
@@ -325,13 +327,18 @@ const Extension = function() {
   }
 
   const renderNotification = () => {
+    if (!state.notification) {
+      return
+    }
     state.notificationElement.innerHTML = `
       <div class="${state.notification.type}">${state.notification.message}</div>
     `
   }
 
   const tick = (cmd) => {
-    state.promptElement.className = ''
+    if (cmd.trim() === '') {
+      state.promptElement.className = ''
+    }
     state.matchIndex = 1
     resetAllMatches()
     updateMatches(cmd)

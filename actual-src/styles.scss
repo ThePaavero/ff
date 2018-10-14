@@ -50,10 +50,6 @@ $promptBackgroundColorCommand: #000000;
     outline: solid 1px $activePromptOutlineColor;
   }
 
-  &:before {
-    content: "";
-  }
-
   &.mode-search {
     background-color: $promptBackgroundColorSearch;
     &:before {

@@ -34,8 +34,6 @@
   text-indent: 10px; }
   #ff-prompt:active, #ff-prompt:focus {
     outline: solid 1px #fff; }
-  #ff-prompt:before {
-    content: ""; }
   #ff-prompt.mode-search {
     background-color: #2a3056; }
     #ff-prompt.mode-search:before {
