@@ -327,7 +327,7 @@ const Extension = function() {
   }
 
   const init = () => {
-    console.log('FF is active!!')
+    console.log('FF is active.')
     listenToGlobalTriggers()
     createElements()
     listenToPromptEvents()

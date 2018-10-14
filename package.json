@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch-js":"watchify actual-src/main.js -o src/inject/inject.js",
-    "watch-scss":"node-sass --watch actual-src/scss/main.scss -o src/inject/styles.css",
+    "watch-scss":"node-sass --watch actual-src/styles.scss -o src/inject",
     "dev": "npm run watch-js && npm run watch-scss"
   },
   "repository": {
