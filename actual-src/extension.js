@@ -1,4 +1,5 @@
 const state = require('./state')
+const command = require('./command')
 const listenToGlobalTriggers = require('./globalTriggers')
 
 const Extension = function() {
@@ -158,12 +159,12 @@ const Extension = function() {
       if (e.key === 'Escape') {
         toggleActive()
       }
-      state.currentCommand = state.promptElement.innerText.trim()
-      if (state.currentCommand === '') {
+      state.promptString = state.promptElement.innerText.trim()
+      if (state.promptString === '') {
         return
       }
       if (!doNotTickOnKeys.includes(e.key)) {
-        tick(state.currentCommand)
+        tick(state.promptString)
       }
     })
   }
@@ -205,6 +206,9 @@ const Extension = function() {
       return
     }
     switch (firstCharacter) {
+      case '>':
+        command.process(str.substr(1, str.length).trim())
+        break
       case ':':
         const selectorString = str.substr(1, str.length)
         if (selectorString.trim() === '') {
@@ -292,8 +296,8 @@ const Extension = function() {
     if (state.active) {
       state.promptElement.focus()
     } else {
-      state.currentCommand = ''
-      state.promptElement.innerText = state.currentCommand
+      state.promptString = ''
+      state.promptElement.innerText = state.promptString
       resetAllMatches()
     }
   }

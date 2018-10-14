@@ -1,5 +1,22 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+const command = () => {
+
+  const process = (cmd) => {
+    switch (cmd) {
+      case 'sc':
+        console.log('Show classes!')
+        break
+    }
+  }
+
+  return {process}
+}
+
+module.exports = command()
+
+},{}],2:[function(require,module,exports){
 const state = require('./state')
+const command = require('./command')
 const listenToGlobalTriggers = require('./globalTriggers')
 
 const Extension = function() {
@@ -159,12 +176,12 @@ const Extension = function() {
       if (e.key === 'Escape') {
         toggleActive()
       }
-      state.currentCommand = state.promptElement.innerText.trim()
-      if (state.currentCommand === '') {
+      state.promptString = state.promptElement.innerText.trim()
+      if (state.promptString === '') {
         return
       }
       if (!doNotTickOnKeys.includes(e.key)) {
-        tick(state.currentCommand)
+        tick(state.promptString)
       }
     })
   }
@@ -206,6 +223,9 @@ const Extension = function() {
       return
     }
     switch (firstCharacter) {
+      case '>':
+        command.process(str.substr(1, str.length).trim())
+        break
       case ':':
         const selectorString = str.substr(1, str.length)
         if (selectorString.trim() === '') {
@@ -293,8 +313,8 @@ const Extension = function() {
     if (state.active) {
       state.promptElement.focus()
     } else {
-      state.currentCommand = ''
-      state.promptElement.innerText = state.currentCommand
+      state.promptString = ''
+      state.promptElement.innerText = state.promptString
       resetAllMatches()
     }
   }
@@ -313,7 +333,7 @@ const Extension = function() {
 
 module.exports = Extension
 
-},{"./globalTriggers":2,"./state":4}],2:[function(require,module,exports){
+},{"./command":1,"./globalTriggers":3,"./state":5}],3:[function(require,module,exports){
 const listenToGlobalTriggers = () => {
 
   const init = (state, toggleActive, reactToTriggerKey) => {
@@ -346,7 +366,7 @@ const listenToGlobalTriggers = () => {
 
 module.exports = listenToGlobalTriggers()
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 const Extension = require('./extension')
 chrome.extension.sendMessage({}, () => {
   const readyStateCheckInterval = setInterval(() => {
@@ -358,12 +378,13 @@ chrome.extension.sendMessage({}, () => {
   }, 10)
 })
 
-},{"./extension":1}],4:[function(require,module,exports){
+},{"./extension":2}],5:[function(require,module,exports){
 const state = {
   triggerKey: 'f',
   active: false,
   keyKeyPressedCount: 0,
-  currentCommand: '',
+  promptString: '',
+  command: '',
   matchIndex: 1,
   triggerKeyTappedTimeoutId: null,
   numberTimeoutId: null,
@@ -377,4 +398,4 @@ const state = {
 
 module.exports = state
 
-},{}]},{},[3]);
+},{}]},{},[4]);
