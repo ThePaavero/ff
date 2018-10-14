@@ -1,5 +1,7 @@
 # Chrome extension for miscellaneous keyboard command driven functions.
 
+![Demo gif](https://github.com/ThePaavero/ff/blob/master/demo-gif.gif)
+
 ## Install
 1. Download or clone this extension onto your computer
 2. Go to `chrome://extensions`
