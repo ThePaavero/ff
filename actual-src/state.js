@@ -13,6 +13,7 @@ const state = {
   wrapperElement: null,
   promptElement: null,
   infoElement: null,
+  notification: null
 }
 
 module.exports = state

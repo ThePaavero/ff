@@ -8,7 +8,7 @@
   right: 0;
   bottom: 0;
   width: 100%;
-  background-color: #7ca986;
+  background-color: #406fa9;
   color: #fff;
   padding: 15px;
   box-sizing: border-box;
@@ -19,9 +19,14 @@
   font-size: 13px; }
   #ff-wrapper.active {
     display: flex; }
+  #ff-wrapper > div {
+    flex-grow: 1;
+    flex-basis: 0;
+    margin-right: 20px; }
+    #ff-wrapper > div:last-child {
+      margin-right: 0; }
 
 #ff-prompt {
-  flex-basis: 50%;
   height: 30px;
   line-height: 25px !important;
   background-color: rgba(0, 0, 0, 0.7);
@@ -77,6 +82,9 @@ a.ff-current-index {
     font-size: 40px; }
 
 #ff-infoElement {
-  flex-basis: 50%;
   text-align: left;
-  padding-left: 20px; }
+  padding-left: 20px;
+  background-color: rgba(255, 255, 255, 0.3); }
+
+#notificationElement {
+  background-color: rgba(255, 255, 255, 0.3); }

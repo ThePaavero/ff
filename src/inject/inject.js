@@ -1,11 +1,14 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 const command = () => {
 
-  const process = (cmd) => {
+  const process = (cmd, onError) => {
     console.log('Command module got a command: "' + cmd + '"')
     switch (cmd) {
       case 'sc':
         console.log('Show classes!')
+        break
+      default:
+        onError()
         break
     }
   }
@@ -42,12 +45,18 @@ const Extension = function() {
     createWrapperElement()
     createPromptElement()
     createInfoElement()
+    createNotificationElement()
   }
 
   const createInfoElement = () => {
     state.infoElement = document.createElement('div')
     state.infoElement.id = 'ff-infoElement'
     state.wrapperElement.appendChild(state.infoElement)
+  }
+  const createNotificationElement = () => {
+    state.notificationElement = document.createElement('div')
+    state.notificationElement.id = 'ff-notificationElement'
+    state.wrapperElement.appendChild(state.notificationElement)
   }
 
   const createPromptElement = () => {
@@ -106,9 +115,20 @@ const Extension = function() {
     return state.matchingElements[state.matchIndex - 1]
   }
 
+  const showNotification = (notification) => {
+    state.notification = notification
+    renderNotification()
+  }
+
   const onEnter = () => {
     if (getFirstCharacter() === '>') {
-      command.process(state.promptString.substr(1, state.promptString.length))
+      const commandString = state.promptString.substr(1, state.promptString.length).trim()
+      command.process(commandString, () => {
+        showNotification({
+          type: 'error',
+          message: 'Unknown command "' + commandString + '"'
+        })
+      })
       return
     }
     const currentMatchingElement = getCurrentMatchingElement()
@@ -197,6 +217,7 @@ const Extension = function() {
       'ff-wrapper',
       'ff-prompt',
       'ff-infoElement',
+      'ff-notificationElement'
     ]
     if (idsToIgnore.includes(element.id)) {
       return true
@@ -232,9 +253,7 @@ const Extension = function() {
     if (!firstCharacter) {
       return
     }
-    console.log(firstCharacter)
     switch (firstCharacter) {
-
       case '>':
         state.command = str.substr(1, str.length)
         break
@@ -310,12 +329,27 @@ const Extension = function() {
     state.infoElement.innerHTML = `${state.matchingElements.length} matches ${state.matchingElements.length > 1 ? '(' + state.matchIndex + ')' : ''}`
   }
 
+  const resetNotification = () => {
+    state.notification = {
+      type: '',
+      message: ''
+    }
+  }
+
+  const renderNotification = () => {
+    state.notificationElement.innerHTML = `
+      <div class="${state.notification.type}">${state.notification.message}</div>
+    `
+  }
+
   const tick = (cmd) => {
     state.matchIndex = 1
     resetAllMatches()
     updateMatches(cmd)
     renderMatches()
     renderInfo()
+    renderNotification()
+    resetNotification()
   }
 
   const toggleActive = () => {
@@ -406,6 +440,7 @@ const state = {
   wrapperElement: null,
   promptElement: null,
   infoElement: null,
+  notification: null
 }
 
 module.exports = state

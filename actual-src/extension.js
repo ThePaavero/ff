@@ -24,12 +24,18 @@ const Extension = function() {
     createWrapperElement()
     createPromptElement()
     createInfoElement()
+    createNotificationElement()
   }
 
   const createInfoElement = () => {
     state.infoElement = document.createElement('div')
     state.infoElement.id = 'ff-infoElement'
     state.wrapperElement.appendChild(state.infoElement)
+  }
+  const createNotificationElement = () => {
+    state.notificationElement = document.createElement('div')
+    state.notificationElement.id = 'ff-notificationElement'
+    state.wrapperElement.appendChild(state.notificationElement)
   }
 
   const createPromptElement = () => {
@@ -88,9 +94,20 @@ const Extension = function() {
     return state.matchingElements[state.matchIndex - 1]
   }
 
+  const showNotification = (notification) => {
+    state.notification = notification
+    renderNotification()
+  }
+
   const onEnter = () => {
     if (getFirstCharacter() === '>') {
-      command.process(state.promptString.substr(1, state.promptString.length))
+      const commandString = state.promptString.substr(1, state.promptString.length).trim()
+      command.process(commandString, () => {
+        showNotification({
+          type: 'error',
+          message: 'Unknown command "' + commandString + '"'
+        })
+      })
       return
     }
     const currentMatchingElement = getCurrentMatchingElement()
@@ -179,6 +196,7 @@ const Extension = function() {
       'ff-wrapper',
       'ff-prompt',
       'ff-infoElement',
+      'ff-notificationElement'
     ]
     if (idsToIgnore.includes(element.id)) {
       return true
@@ -214,9 +232,7 @@ const Extension = function() {
     if (!firstCharacter) {
       return
     }
-    console.log(firstCharacter)
     switch (firstCharacter) {
-
       case '>':
         state.command = str.substr(1, str.length)
         break
@@ -292,12 +308,27 @@ const Extension = function() {
     state.infoElement.innerHTML = `${state.matchingElements.length} matches ${state.matchingElements.length > 1 ? '(' + state.matchIndex + ')' : ''}`
   }
 
+  const resetNotification = () => {
+    state.notification = {
+      type: '',
+      message: ''
+    }
+  }
+
+  const renderNotification = () => {
+    state.notificationElement.innerHTML = `
+      <div class="${state.notification.type}">${state.notification.message}</div>
+    `
+  }
+
   const tick = (cmd) => {
     state.matchIndex = 1
     resetAllMatches()
     updateMatches(cmd)
     renderMatches()
     renderInfo()
+    renderNotification()
+    resetNotification()
   }
 
   const toggleActive = () => {
