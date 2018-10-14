@@ -15,5 +15,5 @@
 * Alternatively, type the corresponding match number to click the element instantly.
 
 ### Todos
-- [ ] PgUp and pgDown
+- [x] Don't block normal use of PgUp and pgDown to scroll the site
 - [ ] Come up with "commands"
