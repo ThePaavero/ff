@@ -89,9 +89,8 @@ const Extension = function() {
   }
 
   const onEnter = () => {
-    if (state.waitForEnterToTick && getFirstCharacter() === '>') {
-      command.process(state.command.substr(1, state.command.length).trim())
-      state.command = ''
+    if (getFirstCharacter() === '>') {
+      command.process(state.promptString.substr(1, state.promptString.length))
       return
     }
     const currentMatchingElement = getCurrentMatchingElement()
@@ -134,7 +133,7 @@ const Extension = function() {
         onEnter()
         return
       }
-      if (!isNaN(Number(e.key)) && e.key !== 'Space') {
+      if (!isNaN(Number(e.key)) && e.keyCode !== 32) {
         if (state.numberSequenceInMemory) {
           // Concat as strings, but form a number.
           state.numberSequenceInMemory = Number(state.numberSequenceInMemory.toString() + e.key.toString())
@@ -147,7 +146,6 @@ const Extension = function() {
           if (state.numberTimeoutId) {
             clearTimeout(state.numberTimeoutId)
           }
-          console.log('HAHAHA')
           onEnter()
         }, 500)
       }
@@ -170,8 +168,7 @@ const Extension = function() {
       if (state.promptString === '') {
         return
       }
-      console.log('state.waitForEnterToTick:', state.waitForEnterToTick)
-      if (!doNotTickOnKeys.includes(e.key) && state.waitForEnterToTick === false) {
+      if (!doNotTickOnKeys.includes(e.key)) {
         tick(state.promptString)
       }
     })
@@ -213,7 +210,6 @@ const Extension = function() {
   }
 
   const updateMatches = (str) => {
-    state.waitForEnterToTick = false
     const firstCharacter = getFirstCharacter()
     if (!firstCharacter) {
       return
@@ -222,8 +218,7 @@ const Extension = function() {
     switch (firstCharacter) {
 
       case '>':
-        state.waitForEnterToTick = true
-        state.command = str
+        state.command = str.substr(1, str.length)
         break
       case ':':
         const selectorString = str.substr(1, str.length)
