@@ -131,7 +131,7 @@ const Extension = function() {
       }, successMessage => {
         showNotification({
           type: 'success',
-          message: 'Unknown command "' + successMessage + '"'
+          message: successMessage
         })
       })
       return
