@@ -22,6 +22,8 @@ Start your string with `>` and enter a command.
 
 #### Available commands
 - `show-classes` (this is just a test for creating "commands" for now)
+- `css` Toggle all CSS imported via `<link>`
+- `stfu` Mute all `video` and `audio` elements
 
 ## Todos
 - [x] Don't block normal use of PgUp and pgDown to scroll the site
