@@ -18,7 +18,7 @@
 ## Commands
 Start your string with `>` and enter a command.
 
-####Available commands
+#### Available commands
 - `show-classes` (this is just a test for creating "commands" for now)
 
 ## Todos
