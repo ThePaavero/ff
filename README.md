@@ -17,6 +17,7 @@
 
 ## Commands
 Start your string with `>` and enter a command.
+
 ###Available commands:
 * `show-classes`
 
