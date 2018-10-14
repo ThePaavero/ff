@@ -18,12 +18,16 @@ const showClassesCommand = require('./commands/showClassesCommand')
 const command = () => {
 
   const process = (cmd, onError, onSuccess) => {
-    const matchingCommand = availableCommands.filter(ac => ac.commandString === cmd)[0]
-    if (!matchingCommand) {
+    try {
+      const matchingCommand = loadedCommands.filter(ac => ac.commandString === cmd)[0]
+      if (typeof matchingCommand === 'undefined') {
+        return onError()
+      }
+      matchingCommand.program.run()
+      onSuccess(matchingCommand.program.getMessage())
+    } catch (e) {
       onError()
     }
-    matchingCommand.run()
-    onSuccess(matchingCommand.getMessage())
   }
 
   return {process}
