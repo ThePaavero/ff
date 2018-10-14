@@ -1,5 +1,6 @@
 const availableCommands = [
-  'showClassesCommand'
+  'showClassesCommand',
+  'stfuCommand',
 ]
 
 const loadedCommands = []
