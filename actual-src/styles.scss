@@ -1,5 +1,8 @@
 $mainBarColor: #406fa9;
 $activePromptOutlineColor: #fff;
+$promptBackgroundColorSearch: #2a3056;
+$promptBackgroundColorSelector: #563938;
+$promptBackgroundColorCommand: #000000;
 
 #ff-wrapper {
   margin: 0;
@@ -37,7 +40,7 @@ $activePromptOutlineColor: #fff;
 
 #ff-prompt {
   height: 30px;
-  line-height: 25px !important;
+  line-height: 25px;
   background-color: rgba(0, 0, 0, 0.7);
   padding: 2px;
   text-indent: 10px;
@@ -45,6 +48,32 @@ $activePromptOutlineColor: #fff;
   &:active,
   &:focus {
     outline: solid 1px $activePromptOutlineColor;
+  }
+
+  &:before {
+    content: "";
+  }
+
+  &.mode-search {
+    background-color: $promptBackgroundColorSearch;
+    &:before {
+      content: "Search: ";
+      opacity: 0.5;
+    }
+  }
+  &.mode-selector {
+    background-color: $promptBackgroundColorSelector;
+    &:before {
+      content: "Selector: ";
+      opacity: 0.5;
+    }
+  }
+  &.mode-command {
+    background-color: $promptBackgroundColorCommand;
+    &:before {
+      content: "Command: ";
+      opacity: 0.5;
+    }
   }
 }
 
@@ -107,9 +136,13 @@ a.ff-current-index {
   text-align: left;
   padding-left: 20px;
   background-color: rgba(255, 255, 255, 0.3);
+  height: 30px;
+  line-height: 30px;
 }
 
 #ff-notificationElement {
+  height: 30px;
+  line-height: 30px;
 
   div.error {
     color: #f98594 !important;

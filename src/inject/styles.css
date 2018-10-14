@@ -28,12 +28,29 @@
 
 #ff-prompt {
   height: 30px;
-  line-height: 25px !important;
+  line-height: 25px;
   background-color: rgba(0, 0, 0, 0.7);
   padding: 2px;
   text-indent: 10px; }
   #ff-prompt:active, #ff-prompt:focus {
     outline: solid 1px #fff; }
+  #ff-prompt:before {
+    content: ""; }
+  #ff-prompt.mode-search {
+    background-color: #2a3056; }
+    #ff-prompt.mode-search:before {
+      content: "Search: ";
+      opacity: 0.5; }
+  #ff-prompt.mode-selector {
+    background-color: #563938; }
+    #ff-prompt.mode-selector:before {
+      content: "Selector: ";
+      opacity: 0.5; }
+  #ff-prompt.mode-command {
+    background-color: #000000; }
+    #ff-prompt.mode-command:before {
+      content: "Command: ";
+      opacity: 0.5; }
 
 .ff-match {
   box-shadow: inset 0 0 0 2px rgba(255, 0, 50, 0.2); }
@@ -84,10 +101,14 @@ a.ff-current-index {
 #ff-infoElement {
   text-align: left;
   padding-left: 20px;
-  background-color: rgba(255, 255, 255, 0.3); }
+  background-color: rgba(255, 255, 255, 0.3);
+  height: 30px;
+  line-height: 30px; }
 
-#ff-notificationElement div.error {
-  color: #f98594 !important; }
-
-#ff-notificationElement div.success {
-  color: #95e45b !important; }
+#ff-notificationElement {
+  height: 30px;
+  line-height: 30px; }
+  #ff-notificationElement div.error {
+    color: #f98594 !important; }
+  #ff-notificationElement div.success {
+    color: #95e45b !important; }

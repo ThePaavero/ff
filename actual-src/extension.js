@@ -237,15 +237,18 @@ const Extension = function() {
     if (!firstCharacter) {
       return
     }
+    let promptClassNamePostfix = 'search'
     switch (firstCharacter) {
       case '>':
         state.command = str.substr(1, str.length)
+        promptClassNamePostfix = 'command'
         break
       case ':':
         const selectorString = str.substr(1, str.length)
         if (selectorString.trim() === '') {
           return
         }
+        promptClassNamePostfix = 'selector'
         try {
           state.matchingElements = Array.from(document.querySelectorAll(selectorString))
         } catch (e) {
@@ -256,6 +259,7 @@ const Extension = function() {
         state.matchingElements = doTextSearch(str)
         break
     }
+    state.promptElement.className = 'mode-' + promptClassNamePostfix
   }
 
   const doTextSearch = (str) => {
@@ -327,6 +331,7 @@ const Extension = function() {
   }
 
   const tick = (cmd) => {
+    state.promptElement.className = ''
     state.matchIndex = 1
     resetAllMatches()
     updateMatches(cmd)
