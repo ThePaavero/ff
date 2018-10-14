@@ -1,3 +1,6 @@
+$mainBarColor: #7ca986;
+$activePromptOutlineColor: #fff;
+
 #ff-wrapper {
   margin: 0;
   border-radius: 0;
@@ -6,12 +9,10 @@
   left: 0;
   right: 0;
   bottom: 0;
-  width: 100vw;
-  height: 30px;
-  line-height: 30px;
-  background-color: rgba(0, 0, 0, 0.8);
+  width: 100%;
+  background-color: $mainBarColor;
   color: #fff;
-  padding: 3px 15px;
+  padding: 15px;
   box-sizing: border-box;
   display: none;
   z-index: 99999999;
@@ -26,14 +27,15 @@
 
 #ff-prompt {
   flex-basis: 50%;
-  height: 25px;
+  height: 30px;
   line-height: 25px !important;
-  background-color: #000;
+  background-color: rgba(0, 0, 0, 0.7);
   padding: 2px;
+  text-indent: 10px;
 
   &:active,
   &:focus {
-    outline: solid 1px orange;
+    outline: solid 1px $activePromptOutlineColor;
   }
 }
 
@@ -69,27 +71,27 @@ a.ff-current-index {
   text-align: center;
   color: #000;
   transform: translateX(-2px) translateY(-2px);
-}
 
-.ff-label:before {
-  content: "➜";
-  color: rgba(255, 0, 50, 1);
-  position: absolute;
-  left: -20px;
-  transform: rotate(45deg);
-  top: -15px;
-  font-size: 20px;
-  opacity: 1;
-}
+  &:before {
+    content: "➜";
+    color: rgba(255, 0, 50, 1);
+    position: absolute;
+    left: -20px;
+    transform: rotate(45deg);
+    top: -15px;
+    font-size: 20px;
+    opacity: 1;
+  }
 
-.ff-label.active:before {
-  content: "➜";
-  color: rgba(255, 0, 50, 1);
-  position: absolute;
-  left: -40px;
-  transform: rotate(45deg);
-  top: -20px;
-  font-size: 40px;
+  &.active:before {
+    content: "➜";
+    color: rgba(255, 0, 50, 1);
+    position: absolute;
+    left: -40px;
+    transform: rotate(45deg);
+    top: -20px;
+    font-size: 40px;
+  }
 }
 
 #ff-infoElement {

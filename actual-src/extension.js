@@ -5,7 +5,7 @@ const Extension = function() {
 
   const triggerKey = 'f'
   const millisecondsThresholdForTriggerTaps = 500
-  const godSelectors = 'body *:not(#ff-prompt)'
+  const godSelectors = 'body *:not(#ff-prompt):not(#ff-wrapper)'
   // const godSelectors = 'a, button, input, .btn, .button'
 
   let promptElement = null
@@ -40,6 +40,7 @@ const Extension = function() {
     promptElement = document.createElement('div')
     promptElement.id = 'ff-prompt'
     promptElement.setAttribute('contenteditable', true)
+    promptElement.setAttribute('spellcheck', false)
     wrapperElement.appendChild(promptElement)
     document.body.appendChild(wrapperElement)
   }
@@ -173,6 +174,14 @@ const Extension = function() {
   }
 
   const elementShouldBeSkipped = (element) => {
+    const idsToIgnore = [
+      'ff-wrapper',
+      'ff-prompt',
+      'ff-infoElement',
+    ]
+    if (idsToIgnore.includes(element.id)) {
+      return true
+    }
     return typeof element.innerText === 'undefined' || element.hidden || element.style.display === 'none' || element.offsetParent === null
   }
 
@@ -234,6 +243,9 @@ const Extension = function() {
   const renderMatches = () => {
     let counter = 1
     state.matchingElements.forEach(element => {
+      if (elementShouldBeSkipped(element)) {
+        return
+      }
       element.classList.add('ff-match')
       if (counter === state.matchIndex) {
         element.classList.add('ff-current-index')
