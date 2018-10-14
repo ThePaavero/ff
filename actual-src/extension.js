@@ -191,7 +191,7 @@ const Extension = function() {
         toggleActive()
       }
       state.promptString = state.promptElement.innerText.trim()
-      if (state.promptString === '') {
+      if (state.promptString === '' || state.promptString.length < 2) {
         resetAllMatches()
         state.promptElement.className = ''
         return
