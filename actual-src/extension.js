@@ -9,13 +9,14 @@ const Extension = function() {
   // const godSelectors = 'a, button, input, .btn, .button'
 
   const resetAllMatches = (resetData = true) => {
+    console.log('resetAllMatches')
     if (resetData) {
       state.matchingElements = []
     }
     Array.from(document.querySelectorAll('body *')).forEach(element => {
       element.classList.remove(...['ff-match', 'ff-current-index'])
     })
-    Array.from(document.querySelectorAll('.ff-label')).forEach(element => {
+    Array.from(document.querySelectorAll('.ff-label, .ff-element')).forEach(element => {
       element.parentElement.removeChild(element)
     })
   }

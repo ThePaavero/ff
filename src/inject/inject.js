@@ -43,7 +43,23 @@ const showClassesCommand = () => {
   }
 
   const run = () => {
-    console.log('Command "Show Classes" running!')
+    console.log('showClassesCommand')
+    const elements = document.querySelectorAll('body *')
+    elements.forEach(renderLabelForElement)
+  }
+
+  const renderLabelForElement = (element) => {
+    const classes = element.classList.toString()
+    if (classes.trim() === '') {
+      return
+    }
+    const label = document.createElement('div')
+    label.innerText = classes
+    label.className = 'ff-element ff-showClassesCommand-label'
+    const coordinates = element.getBoundingClientRect()
+    label.style.top = (coordinates.y + window.scrollY) + 'px'
+    label.style.left = (coordinates.x + window.scrollX) + 'px'
+    document.body.appendChild(label)
   }
 
   const getMessage = () => {
@@ -71,13 +87,14 @@ const Extension = function() {
   // const godSelectors = 'a, button, input, .btn, .button'
 
   const resetAllMatches = (resetData = true) => {
+    console.log('resetAllMatches')
     if (resetData) {
       state.matchingElements = []
     }
     Array.from(document.querySelectorAll('body *')).forEach(element => {
       element.classList.remove(...['ff-match', 'ff-current-index'])
     })
-    Array.from(document.querySelectorAll('.ff-label')).forEach(element => {
+    Array.from(document.querySelectorAll('.ff-label, .ff-element')).forEach(element => {
       element.parentElement.removeChild(element)
     })
   }

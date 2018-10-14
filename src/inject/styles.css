@@ -110,3 +110,12 @@ a.ff-current-index {
     color: #f98594 !important; }
   #ff-notificationElement div.success {
     color: #95e45b !important; }
+
+.ff-showClassesCommand-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 2px;
+  background-color: #000;
+  color: #fff;
+  font-size: 9px; }
