@@ -87,13 +87,11 @@ $promptBackgroundColorCommand: #000000;
   &.over-zero {
     background-color: #95e45b;
     padding: 3px;
-    border-radius: 30px;
     color: rgba(0, 0, 0, 0.8);
     font-size: 20px;
     min-width: 30px;
     height: 30px;
     line-height: 25px;
-    //transform: scale(1.3);
   }
 }
 
