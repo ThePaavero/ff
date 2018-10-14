@@ -111,4 +111,11 @@ a.ff-current-index {
 
 #notificationElement {
   background-color: rgba(255, 255, 255, 0.3);
+
+  > div.error {
+    color: red !important;
+  }
+  > div.success {
+    color: green !important;
+  }
 }

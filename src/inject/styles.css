@@ -88,3 +88,7 @@ a.ff-current-index {
 
 #notificationElement {
   background-color: rgba(255, 255, 255, 0.3); }
+  #notificationElement > div.error {
+    color: red !important; }
+  #notificationElement > div.success {
+    color: green !important; }
