@@ -7,7 +7,6 @@ const availableCommands = {
 const loadedCommands = []
 
 Object.keys(availableCommands).forEach(c => {
-  console.log('Loading command "' + c + '"')
   const program = availableCommands[c]
   loadedCommands.push({
     program,
