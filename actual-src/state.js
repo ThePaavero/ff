@@ -3,6 +3,7 @@ const state = {
   active: false,
   keyKeyPressedCount: 0,
   promptString: '',
+  waitForEnterToTick: false,
   command: '',
   matchIndex: 1,
   triggerKeyTappedTimeoutId: null,

@@ -89,6 +89,10 @@ const Extension = function() {
   }
 
   const onEnter = () => {
+    if (state.waitForEnterToTick && getFirstCharacter() === '>') {
+      command.process(state.command.substr(1, state.command.length).trim())
+      state.command = ''
+    }
     const currentMatchingElement = getCurrentMatchingElement()
     currentMatchingElement.click()
     resetAllMatches()
@@ -163,7 +167,7 @@ const Extension = function() {
       if (state.promptString === '') {
         return
       }
-      if (!doNotTickOnKeys.includes(e.key)) {
+      if (!doNotTickOnKeys.includes(e.key) || state.waitForEnterToTick === true) {
         tick(state.promptString)
       }
     })
@@ -200,14 +204,20 @@ const Extension = function() {
     return match
   }
 
+  const getFirstCharacter = () => {
+    return state.promptString.substr(0, 1)
+  }
+
   const updateMatches = (str) => {
-    const firstCharacter = str.substr(0, 1)
+    state.waitForEnterToTick = false
+    const firstCharacter = getFirstCharacter()
     if (!firstCharacter) {
       return
     }
     switch (firstCharacter) {
       case '>':
-        command.process(str.substr(1, str.length).trim())
+        state.waitForEnterToTick = true
+        state.command = str.substr(1, str.length)
         break
       case ':':
         const selectorString = str.substr(1, str.length)
