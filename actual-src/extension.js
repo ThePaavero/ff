@@ -9,6 +9,9 @@ const Extension = function() {
   // const godSelectors = 'a, button, input, .btn, .button'
 
   const resetAllMatches = (resetData = true) => {
+    if (!state.okToReset) {
+      return
+    }
     console.log('resetAllMatches')
     if (resetData) {
       state.matchingElements = []
@@ -103,7 +106,7 @@ const Extension = function() {
   const onEnter = () => {
     if (getFirstCharacter() === '>') {
       const commandString = state.promptString.substr(1, state.promptString.length).trim()
-      command.process(commandString, () => {
+      command.process(state, commandString, () => {
         showNotification({
           type: 'error',
           message: 'Unknown command "' + commandString + '"'

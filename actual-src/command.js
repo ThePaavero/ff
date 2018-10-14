@@ -16,14 +16,18 @@ const showClassesCommand = require('./commands/showClassesCommand')
 
 const command = () => {
 
-  const process = (cmd, onError, onSuccess) => {
+  const process = (state, cmd, onError, onSuccess) => {
     try {
       const matchingCommand = loadedCommands.filter(ac => ac.commandString === cmd)[0]
       if (typeof matchingCommand === 'undefined') {
         return onError()
       }
-      matchingCommand.program.run()
+      state.okToReset = false
+      matchingCommand.program.run(state)
       onSuccess(matchingCommand.program.getMessage())
+      setTimeout(() => {
+        state.okToReset = true
+      }, 0)
     } catch (e) {
       onError()
     }

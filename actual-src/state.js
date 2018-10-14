@@ -13,7 +13,8 @@ const state = {
   wrapperElement: null,
   promptElement: null,
   infoElement: null,
-  notification: null
+  notification: null,
+  okToReset: true
 }
 
 module.exports = state

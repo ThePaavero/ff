@@ -4,7 +4,7 @@ const showClassesCommand = () => {
     return 'show-classes'
   }
 
-  const run = () => {
+  const run = (state) => {
     console.log('showClassesCommand')
     const elements = document.querySelectorAll('body *')
     elements.forEach(renderLabelForElement)
