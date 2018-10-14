@@ -12,7 +12,6 @@ const Extension = function() {
     if (!state.okToReset) {
       return
     }
-    console.log('resetAllMatches')
     if (resetData) {
       state.matchingElements = []
     }

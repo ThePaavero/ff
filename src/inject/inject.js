@@ -47,7 +47,6 @@ const showClassesCommand = () => {
   }
 
   const run = (state) => {
-    console.log('showClassesCommand')
     const elements = document.querySelectorAll('body *')
     elements.forEach(renderLabelForElement)
   }
@@ -94,7 +93,6 @@ const Extension = function() {
     if (!state.okToReset) {
       return
     }
-    console.log('resetAllMatches')
     if (resetData) {
       state.matchingElements = []
     }
