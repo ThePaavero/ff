@@ -490,7 +490,7 @@ const Extension = function() {
   }
 
   const renderInfo = () => {
-    state.infoElement.innerHTML = `${state.matchingElements.length} matches ${state.matchingElements.length > 1 ? '(' + state.matchIndex + ')' : ''}`
+    state.infoElement.innerHTML = `<div class="ff-match-count-indicator">${state.matchingElements.length}</div> matches ${state.matchingElements.length > 1 ? '(' + state.matchIndex + ')' : ''}`
   }
 
   const resetNotification = () => {
