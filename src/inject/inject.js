@@ -1,4 +1,4 @@
-const Extension = function () {
+const Extension = function() {
 
   const triggerKey = 'f'
   const millisecondsThresholdForTriggerTaps = 500
@@ -132,8 +132,29 @@ const Extension = function () {
     toggleActive()
   }
 
+  const handlePageUpAndDownWhileInFocus = (e) => {
+    // What a hack:
+    // In order to not prevent normal Page Up / Page Down scrolling of the page itself,
+    // because of the way an element with contenteditable set to true and is in focus behaves on
+    // Page Up and Page Down, we need to disable the contenteditable attribute for one millisecond
+    // so that the browser will apply the Page Up/Down onto the document itself instead of our prompt.
+    // Then, immediately after, return our contenteditable attribute to true and refocus on the prompt again.
+    if (e.key === 'PageDown' || e.key === 'PageUp') {
+      promptElement.setAttribute('contenteditable', false)
+      setTimeout(() => {
+        promptElement.setAttribute('contenteditable', true)
+        promptElement.focus()
+      }, 1)
+      return true
+    }
+    return false
+  }
+
   const listenToPromptEvents = () => {
     promptElement.addEventListener('keydown', e => {
+      if (handlePageUpAndDownWhileInFocus(e)) {
+        return
+      }
       if (e.key === 'Enter' || e.key === 'Tab' || (!isNaN(Number(e.key)) && Number(e.key) !== 0)) {
         e.preventDefault()
       }
@@ -163,6 +184,14 @@ const Extension = function () {
       }
     })
 
+    const doNotTickOnKeys = [
+      'Tab',
+      'Shift',
+      'Control',
+      'Escape',
+      'PageDown',
+      'PageUp',
+    ];
     promptElement.addEventListener('keyup', e => {
       if (e.key === 'Escape') {
         toggleActive()
@@ -171,7 +200,7 @@ const Extension = function () {
       if (state.currentCommand === '') {
         return
       }
-      if (e.key !== 'Tab' && e.key !== 'Shift') {
+      if (!doNotTickOnKeys.includes(e.key)) {
         tick(state.currentCommand)
       }
     })
