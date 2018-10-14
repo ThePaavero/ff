@@ -155,7 +155,7 @@ const Extension = function() {
       if (handlePageUpAndDownWhileInFocus(e)) {
         return
       }
-      if (e.key === 'Enter' || e.key === 'Tab' || (!isNaN(Number(e.key)) && Number(e.key) !== 0)) {
+      if (e.key === 'Enter' || e.key === 'Tab' || (!isNaN(Number(e.key)) && Number(e.key) !== 0 && e.key !== 0 && e.key !== '0')) {
         e.preventDefault()
       }
       if (e.key === 'Tab') {
@@ -276,6 +276,9 @@ const Extension = function() {
       const coordinates = element.getBoundingClientRect()
       label.innerText = counter
       label.className = 'ff-label'
+      if (counter === state.matchIndex) {
+        label.classList.add('active')
+      }
       label.style.top = (coordinates.y + window.scrollY) + 'px'
       label.style.left = (coordinates.x + window.scrollX) + 'px'
       document.body.appendChild(label)
