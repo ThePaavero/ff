@@ -18,10 +18,10 @@
 ## Commands
 Start your string with `>` and enter a command.
 
-###Available commands:
+###Available commands
 * `show-classes`
 
-### Todos
+## Todos
 - [x] Don't block normal use of PgUp and pgDown to scroll the site
 - [x] Automatically scroll to matching element that has current "tab index"
 - [x] Come up with "commands"
