@@ -108,6 +108,7 @@ const Extension = function() {
           message: 'Unknown command "' + commandString + '"'
         })
       }, successMessage => {
+        state.promptString = ''
         showNotification({
           type: 'success',
           message: successMessage

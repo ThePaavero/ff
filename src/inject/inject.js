@@ -1,16 +1,29 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+const availableCommands = [
+  'showClassesCommand'
+]
+
+const loadedCommands = []
+
+availableCommands.forEach(c => {
+  const program = require('./commands/' + c)
+  loadedCommands.push({
+    program,
+    commandString: program.getCommand()
+  })
+})
+
+const showClassesCommand = require('./commands/showClassesCommand')
+
 const command = () => {
 
   const process = (cmd, onError, onSuccess) => {
-    switch (cmd) {
-      case 'sc':
-        console.log('Show classes!')
-        onSuccess('Showing classes for all elements')
-        break
-      default:
-        onError()
-        break
+    const matchingCommand = availableCommands.filter(ac => ac.commandString === cmd)[0]
+    if (!matchingCommand) {
+      onError()
     }
+    matchingCommand.run()
+    onSuccess(matchingCommand.getMessage())
   }
 
   return {process}
@@ -18,7 +31,31 @@ const command = () => {
 
 module.exports = command()
 
-},{}],2:[function(require,module,exports){
+},{"./commands/showClassesCommand":2}],2:[function(require,module,exports){
+const showClassesCommand = () => {
+
+  const getCommand = () => {
+    return 'show-classes'
+  }
+
+  const run = () => {
+    console.log('Command "Show Classes" running!')
+  }
+
+  const getMessage = () => {
+    return 'Showing classes for all elements'
+  }
+
+  return {
+    getCommand,
+    run,
+    getMessage
+  }
+}
+
+module.exports = showClassesCommand()
+
+},{}],3:[function(require,module,exports){
 const state = require('./state')
 const command = require('./command')
 const listenToGlobalTriggers = require('./globalTriggers')
@@ -129,6 +166,7 @@ const Extension = function() {
           message: 'Unknown command "' + commandString + '"'
         })
       }, successMessage => {
+        state.promptString = ''
         showNotification({
           type: 'success',
           message: successMessage
@@ -396,7 +434,7 @@ const Extension = function() {
 
 module.exports = Extension
 
-},{"./command":1,"./globalTriggers":3,"./state":5}],3:[function(require,module,exports){
+},{"./command":1,"./globalTriggers":4,"./state":6}],4:[function(require,module,exports){
 const listenToGlobalTriggers = () => {
 
   const init = (state, toggleActive, reactToTriggerKey) => {
@@ -429,7 +467,7 @@ const listenToGlobalTriggers = () => {
 
 module.exports = listenToGlobalTriggers()
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 const Extension = require('./extension')
 chrome.extension.sendMessage({}, () => {
   const readyStateCheckInterval = setInterval(() => {
@@ -441,7 +479,7 @@ chrome.extension.sendMessage({}, () => {
   }, 10)
 })
 
-},{"./extension":2}],5:[function(require,module,exports){
+},{"./extension":3}],6:[function(require,module,exports){
 const state = {
   triggerKey: 'f',
   active: false,
@@ -462,4 +500,4 @@ const state = {
 
 module.exports = state
 
-},{}]},{},[4]);
+},{}]},{},[5]);
