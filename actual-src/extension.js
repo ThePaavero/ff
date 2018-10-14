@@ -321,7 +321,14 @@ const Extension = function() {
   }
 
   const renderInfo = () => {
-    state.infoElement.innerHTML = `<div class="ff-match-count-indicator">${state.matchingElements.length}</div> matches ${state.matchingElements.length > 1 ? '(' + state.matchIndex + ')' : ''}`
+    const amountOfMatches = state.matchingElements.length
+    state.infoElement.innerHTML = `
+      <div class="ff-match-count-indicator ${amountOfMatches > 0 ? 'over-zero' : ''}">
+        ${amountOfMatches}
+      </div>
+      matches
+      ${amountOfMatches > 1 ? '(' + state.matchIndex + ')' : ''}
+    `
   }
 
   const resetNotification = () => {
