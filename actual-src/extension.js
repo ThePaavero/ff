@@ -3,7 +3,6 @@ const listenToGlobalTriggers = require('./globalTriggers')
 
 const Extension = function() {
 
-  const triggerKey = 'f'
   const millisecondsThresholdForTriggerTaps = 500
   const godSelectors = 'body *:not(#ff-prompt):not(#ff-wrapper)'
   // const godSelectors = 'a, button, input, .btn, .button'
