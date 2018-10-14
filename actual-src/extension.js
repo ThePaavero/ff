@@ -92,6 +92,7 @@ const Extension = function() {
     if (state.waitForEnterToTick && getFirstCharacter() === '>') {
       command.process(state.command.substr(1, state.command.length).trim())
       state.command = ''
+      return
     }
     const currentMatchingElement = getCurrentMatchingElement()
     currentMatchingElement.click()
@@ -133,7 +134,7 @@ const Extension = function() {
         onEnter()
         return
       }
-      if (!isNaN(Number(e.key))) {
+      if (!isNaN(Number(e.key)) && e.key !== 'Space') {
         if (state.numberSequenceInMemory) {
           // Concat as strings, but form a number.
           state.numberSequenceInMemory = Number(state.numberSequenceInMemory.toString() + e.key.toString())
@@ -146,6 +147,7 @@ const Extension = function() {
           if (state.numberTimeoutId) {
             clearTimeout(state.numberTimeoutId)
           }
+          console.log('HAHAHA')
           onEnter()
         }, 500)
       }
@@ -158,6 +160,7 @@ const Extension = function() {
       'Escape',
       'PageDown',
       'PageUp',
+      'Space'
     ];
     state.promptElement.addEventListener('keyup', e => {
       if (e.key === 'Escape') {
@@ -167,7 +170,8 @@ const Extension = function() {
       if (state.promptString === '') {
         return
       }
-      if (!doNotTickOnKeys.includes(e.key) || state.waitForEnterToTick === true) {
+      console.log('state.waitForEnterToTick:', state.waitForEnterToTick)
+      if (!doNotTickOnKeys.includes(e.key) && state.waitForEnterToTick === false) {
         tick(state.promptString)
       }
     })
@@ -214,10 +218,12 @@ const Extension = function() {
     if (!firstCharacter) {
       return
     }
+    console.log(firstCharacter)
     switch (firstCharacter) {
+
       case '>':
         state.waitForEnterToTick = true
-        state.command = str.substr(1, str.length)
+        state.command = str
         break
       case ':':
         const selectorString = str.substr(1, str.length)
