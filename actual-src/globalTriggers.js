@@ -1,6 +1,6 @@
 const helpers = require('./helpers')
 
-const listenToGlobalTriggers = () => {
+const globalTriggers = () => {
 
   const init = (state, reactToTriggerKey) => {
     document.body.addEventListener('click', e => {
@@ -30,4 +30,4 @@ const listenToGlobalTriggers = () => {
   return {init}
 }
 
-module.exports = listenToGlobalTriggers()
+module.exports = globalTriggers()
