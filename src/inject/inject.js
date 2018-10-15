@@ -239,6 +239,7 @@ const listenToGlobalTriggers = require('./globalTriggers')
 const elementCreator = require('./elementCreator')
 const renderer = require('./renderer')
 const matchUpdater = require('./matchUpdater')
+const promptHandler = require('./promptHandler')
 
 const Extension = function() {
 
@@ -325,90 +326,6 @@ const Extension = function() {
     toggleActive()
   }
 
-  const handlePageUpAndDownWhileInFocus = (e) => {
-    // What a hack:
-    // In order to not prevent normal Page Up / Page Down scrolling of the page itself,
-    // because of the way an element with contenteditable set to true and is in focus behaves on
-    // Page Up and Page Down, we need to disable the contenteditable attribute for one millisecond
-    // so that the browser will apply the Page Up/Down onto the document itself instead of our prompt.
-    // Then, immediately after, return our contenteditable attribute to true and refocus on the prompt again.
-    if (e.key === 'PageDown' || e.key === 'PageUp') {
-      state.promptElement.setAttribute('contenteditable', false)
-      setTimeout(() => {
-        state.promptElement.setAttribute('contenteditable', true)
-        state.promptElement.focus()
-      }, 1)
-      return true
-    }
-    return false
-  }
-
-  const listenToPromptEvents = () => {
-
-    state.wrapperElement.addEventListener('blur', e => {
-      if (state.active) {
-        toggleActive()
-      }
-    })
-
-    state.promptElement.addEventListener('keydown', e => {
-      if (handlePageUpAndDownWhileInFocus(e)) {
-        return
-      }
-      if (e.key === 'Enter' || e.key === 'Tab' || (!isNaN(Number(e.key)) && Number(e.key) !== 0 && e.key !== 0 && e.key !== '0')) {
-        e.preventDefault()
-      }
-      if (e.key === 'Tab') {
-        rotateMatch()
-        return
-      }
-      if (e.key === 'Enter') {
-        onEnter()
-        return
-      }
-      if (!isNaN(Number(e.key)) && e.keyCode !== 32) {
-        if (state.numberSequenceInMemory) {
-          // Concat as strings, but form a number.
-          state.numberSequenceInMemory = Number(state.numberSequenceInMemory.toString() + e.key.toString())
-        } else {
-          state.numberSequenceInMemory = Number(e.key)
-        }
-        state.numberTimeoutId = setTimeout(() => {
-          state.matchIndex = state.numberSequenceInMemory
-          state.numberSequenceInMemory = null
-          if (state.numberTimeoutId) {
-            clearTimeout(state.numberTimeoutId)
-          }
-          onEnter()
-        }, 500)
-      }
-    })
-
-    const doNotTickOnKeys = [
-      'Tab',
-      'Shift',
-      'Control',
-      'Escape',
-      'PageDown',
-      'PageUp',
-      'Space'
-    ];
-    state.promptElement.addEventListener('keyup', e => {
-      if (e.key === 'Escape') {
-        toggleActive()
-      }
-      state.promptString = state.promptElement.innerText.trim()
-      if (state.promptString === '' || state.promptString.length < 2) {
-        resetAllMatches()
-        state.promptElement.className = ''
-        return
-      }
-      if (!doNotTickOnKeys.includes(e.key)) {
-        tick(state.promptString)
-      }
-    })
-  }
-
   const getFirstCharacter = () => {
     return state.promptString.substr(0, 1)
   }
@@ -449,7 +366,7 @@ const Extension = function() {
   const init = () => {
     listenToGlobalTriggers.init(state, toggleActive, reactToTriggerKey)
     elementCreator.init(state)
-    listenToPromptEvents()
+    promptHandler.init(state, toggleActive, rotateMatch, onEnter, resetAllMatches, tick)
     console.log('FF is active.')
   }
 
@@ -460,7 +377,7 @@ const Extension = function() {
 
 module.exports = Extension
 
-},{"./command":1,"./elementCreator":7,"./globalTriggers":9,"./matchUpdater":11,"./renderer":12,"./state":13}],9:[function(require,module,exports){
+},{"./command":1,"./elementCreator":7,"./globalTriggers":9,"./matchUpdater":11,"./promptHandler":12,"./renderer":13,"./state":14}],9:[function(require,module,exports){
 const listenToGlobalTriggers = () => {
 
   const init = (state, toggleActive, reactToTriggerKey) => {
@@ -592,6 +509,98 @@ const matchUpdater = () => {
 module.exports = matchUpdater()
 
 },{}],12:[function(require,module,exports){
+const promptHandler = () => {
+
+  const handlePageUpAndDownWhileInFocus = (e) => {
+    // What a hack:
+    // In order to not prevent normal Page Up / Page Down scrolling of the page itself,
+    // because of the way an element with contenteditable set to true and is in focus behaves on
+    // Page Up and Page Down, we need to disable the contenteditable attribute for one millisecond
+    // so that the browser will apply the Page Up/Down onto the document itself instead of our prompt.
+    // Then, immediately after, return our contenteditable attribute to true and refocus on the prompt again.
+    if (e.key === 'PageDown' || e.key === 'PageUp') {
+      state.promptElement.setAttribute('contenteditable', false)
+      setTimeout(() => {
+        state.promptElement.setAttribute('contenteditable', true)
+        state.promptElement.focus()
+      }, 1)
+      return true
+    }
+    return false
+  }
+
+  const init = (state, toggleActive, rotateMatch, onEnter, resetAllMatches, tick) => {
+
+    state.wrapperElement.addEventListener('blur', e => {
+      if (state.active) {
+        toggleActive()
+      }
+    })
+
+    state.promptElement.addEventListener('keydown', e => {
+      if (handlePageUpAndDownWhileInFocus(e)) {
+        return
+      }
+      if (e.key === 'Enter' || e.key === 'Tab' || (!isNaN(Number(e.key)) && Number(e.key) !== 0 && e.key !== 0 && e.key !== '0')) {
+        e.preventDefault()
+      }
+      if (e.key === 'Tab') {
+        rotateMatch()
+        return
+      }
+      if (e.key === 'Enter') {
+        onEnter()
+        return
+      }
+      if (!isNaN(Number(e.key)) && e.keyCode !== 32) {
+        if (state.numberSequenceInMemory) {
+          // Concat as strings, but form a number.
+          state.numberSequenceInMemory = Number(state.numberSequenceInMemory.toString() + e.key.toString())
+        } else {
+          state.numberSequenceInMemory = Number(e.key)
+        }
+        state.numberTimeoutId = setTimeout(() => {
+          state.matchIndex = state.numberSequenceInMemory
+          state.numberSequenceInMemory = null
+          if (state.numberTimeoutId) {
+            clearTimeout(state.numberTimeoutId)
+          }
+          onEnter()
+        }, 500)
+      }
+    })
+
+    const doNotTickOnKeys = [
+      'Tab',
+      'Shift',
+      'Control',
+      'Escape',
+      'PageDown',
+      'PageUp',
+      'Space'
+    ];
+    state.promptElement.addEventListener('keyup', e => {
+      if (e.key === 'Escape') {
+        toggleActive()
+      }
+      state.promptString = state.promptElement.innerText.trim()
+      if (state.promptString === '' || state.promptString.length < 2) {
+        resetAllMatches()
+        state.promptElement.className = ''
+        return
+      }
+      if (!doNotTickOnKeys.includes(e.key)) {
+        tick(state.promptString)
+      }
+    })
+  }
+
+  return {init}
+}
+
+module.exports = promptHandler()
+
+},{}],13:[function(require,module,exports){
 const renderer = () => {
 
   const scrollToMatchWithCurrentIndex = () => {
@@ -661,7 +670,7 @@ const renderer = () => {
 
 module.exports = renderer()
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 const state = {
   triggerKey: 'f',
   active: false,
