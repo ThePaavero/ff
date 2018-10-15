@@ -304,6 +304,9 @@ const Extension = function() {
       return
     }
     const currentMatchingElement = getCurrentMatchingElement()
+    if (!currentMatchingElement) {
+      return
+    }
     currentMatchingElement.focus()
     currentMatchingElement.click()
     matchUpdater.resetAllMatches(state, true)
@@ -351,7 +354,7 @@ module.exports = Extension
 },{"./command":1,"./elementCreator":7,"./globalTriggers":9,"./helpers":10,"./matchUpdater":12,"./promptHandler":13,"./renderer":14,"./state":15}],9:[function(require,module,exports){
 const helpers = require('./helpers')
 
-const listenToGlobalTriggers = () => {
+const globalTriggers = () => {
 
   const init = (state, reactToTriggerKey) => {
     document.body.addEventListener('click', e => {
@@ -381,7 +384,7 @@ const listenToGlobalTriggers = () => {
   return {init}
 }
 
-module.exports = listenToGlobalTriggers()
+module.exports = globalTriggers()
 
 },{"./helpers":10}],10:[function(require,module,exports){
 module.exports = {
@@ -541,6 +544,14 @@ const promptHandler = () => {
     return false
   }
 
+  const isNumber = (input) => {
+    return !isNaN(Number(input))
+  }
+
+  const clickOnMatchOfIndex = (state) => {
+    state.matchingElements[state.matchIndex - 1].click()
+  }
+
   const init = (state, rotateMatch, onEnter, tick) => {
 
     state.wrapperElement.addEventListener('blur', e => {
@@ -553,7 +564,7 @@ const promptHandler = () => {
       if (handlePageUpAndDownWhileInFocus(state, e)) {
         return
       }
-      if (e.key === 'Enter' || e.key === 'Tab' || (!isNaN(Number(e.key)) && Number(e.key) !== 0 && e.key !== 0 && e.key !== '0')) {
+      if ((e.key === 'Enter' || e.key === 'Tab' || isNumber(e.key)) && e.keyCode !== 32) {
         e.preventDefault()
       }
       if (e.key === 'Tab') {
@@ -564,20 +575,21 @@ const promptHandler = () => {
         onEnter()
         return
       }
-      if (!isNaN(Number(e.key)) && e.keyCode !== 32) {
+      if (isNumber(e.key) && e.keyCode !== 32) {
         if (state.numberSequenceInMemory) {
           // Concat as strings, but form a number.
           state.numberSequenceInMemory = Number(state.numberSequenceInMemory.toString() + e.key.toString())
         } else {
           state.numberSequenceInMemory = Number(e.key)
         }
+        console.log('state.numberSequenceInMemory:', state.numberSequenceInMemory)
         state.numberTimeoutId = setTimeout(() => {
           state.matchIndex = state.numberSequenceInMemory
           state.numberSequenceInMemory = null
           if (state.numberTimeoutId) {
             clearTimeout(state.numberTimeoutId)
           }
-          onEnter()
+          clickOnMatchOfIndex(state)
         }, 500)
       }
     })
@@ -651,9 +663,6 @@ const renderer = () => {
   const renderMatches = (state) => {
     let counter = 1
     state.matchingElements.forEach(element => {
-      if (helpers.elementShouldBeSkipped(element)) {
-        return
-      }
       element.classList.add('ff-match')
       if (counter === state.matchIndex) {
         element.classList.add('ff-current-index')

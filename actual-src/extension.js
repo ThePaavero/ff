@@ -69,6 +69,9 @@ const Extension = function() {
       return
     }
     const currentMatchingElement = getCurrentMatchingElement()
+    if (!currentMatchingElement) {
+      return
+    }
     currentMatchingElement.focus()
     currentMatchingElement.click()
     matchUpdater.resetAllMatches(state, true)
