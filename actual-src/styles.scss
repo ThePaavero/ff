@@ -4,6 +4,10 @@ $promptBackgroundColorSearch: #2a3056;
 $promptBackgroundColorSelector: #563938;
 $promptBackgroundColorCommand: #000000;
 
+@mixin onTop() {
+  z-index: 9999999999999999999999999999999;
+}
+
 #ff-wrapper {
   margin: 0;
   border-radius: 0;
@@ -18,7 +22,7 @@ $promptBackgroundColorCommand: #000000;
   padding: 15px;
   box-sizing: border-box;
   display: none;
-  z-index: 99999999999999999999999;
+  @include onTop();
   text-align: left;
   font-family: Consolas, Monospaced, sans-serif !important;
   font-size: 13px;
@@ -103,6 +107,7 @@ $promptBackgroundColorCommand: #000000;
   height: 20px;
   line-height: 20px;
   text-align: center;
+  @include onTop();
 
   &.over-zero {
     background-color: #95e45b;
@@ -123,6 +128,7 @@ a.ff-match {
 
 .ff-current-index {
   box-shadow: inset 0 0 0 5px rgba(255, 0, 50, 0.5);
+  @include onTop();
 }
 
 input[type=submit].ff-current-index,
@@ -143,6 +149,7 @@ a.ff-current-index {
   text-align: center;
   color: #000;
   transform: translateX(-2px) translateY(-2px);
+  @include onTop();
 
   &:before {
     content: "➜";
@@ -167,6 +174,7 @@ a.ff-current-index {
 }
 
 .ff-showClassesCommand-label {
+  @include onTop();
   position: absolute;
   top: 0;
   left: 0;

@@ -28,6 +28,7 @@ const promptHandler = () => {
   const clickOnMatchOfIndex = (state) => {
     if (typeof state.matchingElements[state.matchIndex - 1] === 'undefined') {
       console.warn('No matching element found.')
+      matchUpdater.resetAllMatches(state, true)
       return
     }
     state.matchingElements[state.matchIndex - 1].click()
