@@ -1,12 +1,12 @@
 const state = require('./state')
 const command = require('./command')
 const listenToGlobalTriggers = require('./globalTriggers')
+const elementCreator = require('./elementCreator')
 
 const Extension = function() {
 
   const millisecondsThresholdForTriggerTaps = 500
   const godSelectors = 'body *:not(#ff-prompt):not(#ff-wrapper)'
-  // const godSelectors = 'a, button, input, .btn, .button'
 
   const resetAllMatches = (resetData = true) => {
     if (!state.okToReset) {
@@ -20,43 +20,6 @@ const Extension = function() {
     })
     Array.from(document.querySelectorAll('.ff-label, .ff-element')).forEach(element => {
       element.parentElement.removeChild(element)
-    })
-  }
-
-  const createElements = () => {
-    createWrapperElement()
-    createPromptElement()
-    createInfoElement()
-    createNotificationElement()
-  }
-
-  const createInfoElement = () => {
-    state.infoElement = document.createElement('div')
-    state.infoElement.id = 'ff-infoElement'
-    state.wrapperElement.appendChild(state.infoElement)
-  }
-  const createNotificationElement = () => {
-    state.notificationElement = document.createElement('div')
-    state.notificationElement.id = 'ff-notificationElement'
-    state.wrapperElement.appendChild(state.notificationElement)
-  }
-
-  const createPromptElement = () => {
-    state.promptElement = document.createElement('div')
-    state.promptElement.id = 'ff-prompt'
-    state.promptElement.setAttribute('contenteditable', true)
-    state.promptElement.setAttribute('spellcheck', false)
-    state.wrapperElement.appendChild(state.promptElement)
-    document.body.appendChild(state.wrapperElement)
-  }
-
-  const createWrapperElement = () => {
-    state.wrapperElement = document.createElement('div')
-    state.wrapperElement.id = 'ff-wrapper'
-    state.wrapperElement.addEventListener('blur', e => {
-      if (state.active) {
-        toggleActive()
-      }
     })
   }
 
@@ -145,6 +108,13 @@ const Extension = function() {
   }
 
   const listenToPromptEvents = () => {
+
+    state.wrapperElement.addEventListener('blur', e => {
+      if (state.active) {
+        toggleActive()
+      }
+    })
+
     state.promptElement.addEventListener('keydown', e => {
       if (handlePageUpAndDownWhileInFocus(e)) {
         return
@@ -375,7 +345,7 @@ const Extension = function() {
 
   const init = () => {
     listenToGlobalTriggers.init(state, toggleActive, reactToTriggerKey)
-    createElements()
+    elementCreator.init(state)
     listenToPromptEvents()
     console.log('FF is active.')
   }

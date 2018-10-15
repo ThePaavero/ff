@@ -193,15 +193,55 @@ const toggleCssCommand = () => {
 module.exports = toggleCssCommand()
 
 },{}],7:[function(require,module,exports){
+const elementCreator = () => {
+
+  const createInfoElement = (state) => {
+    state.infoElement = document.createElement('div')
+    state.infoElement.id = 'ff-infoElement'
+    state.wrapperElement.appendChild(state.infoElement)
+  }
+  const createNotificationElement = (state) => {
+    state.notificationElement = document.createElement('div')
+    state.notificationElement.id = 'ff-notificationElement'
+    state.wrapperElement.appendChild(state.notificationElement)
+  }
+
+  const createPromptElement = (state) => {
+    state.promptElement = document.createElement('div')
+    state.promptElement.id = 'ff-prompt'
+    state.promptElement.setAttribute('contenteditable', true)
+    state.promptElement.setAttribute('spellcheck', false)
+    state.wrapperElement.appendChild(state.promptElement)
+    document.body.appendChild(state.wrapperElement)
+  }
+
+  const createWrapperElement = (state) => {
+    state.wrapperElement = document.createElement('div')
+    state.wrapperElement.id = 'ff-wrapper'
+  }
+
+  const init = (state) => {
+    createWrapperElement(state)
+    createPromptElement(state)
+    createInfoElement(state)
+    createNotificationElement(state)
+  }
+
+  return {init}
+}
+
+module.exports = elementCreator()
+
+},{}],8:[function(require,module,exports){
 const state = require('./state')
 const command = require('./command')
 const listenToGlobalTriggers = require('./globalTriggers')
+const elementCreator = require('./elementCreator')
 
 const Extension = function() {
 
   const millisecondsThresholdForTriggerTaps = 500
   const godSelectors = 'body *:not(#ff-prompt):not(#ff-wrapper)'
-  // const godSelectors = 'a, button, input, .btn, .button'
 
   const resetAllMatches = (resetData = true) => {
     if (!state.okToReset) {
@@ -215,43 +255,6 @@ const Extension = function() {
     })
     Array.from(document.querySelectorAll('.ff-label, .ff-element')).forEach(element => {
       element.parentElement.removeChild(element)
-    })
-  }
-
-  const createElements = () => {
-    createWrapperElement()
-    createPromptElement()
-    createInfoElement()
-    createNotificationElement()
-  }
-
-  const createInfoElement = () => {
-    state.infoElement = document.createElement('div')
-    state.infoElement.id = 'ff-infoElement'
-    state.wrapperElement.appendChild(state.infoElement)
-  }
-  const createNotificationElement = () => {
-    state.notificationElement = document.createElement('div')
-    state.notificationElement.id = 'ff-notificationElement'
-    state.wrapperElement.appendChild(state.notificationElement)
-  }
-
-  const createPromptElement = () => {
-    state.promptElement = document.createElement('div')
-    state.promptElement.id = 'ff-prompt'
-    state.promptElement.setAttribute('contenteditable', true)
-    state.promptElement.setAttribute('spellcheck', false)
-    state.wrapperElement.appendChild(state.promptElement)
-    document.body.appendChild(state.wrapperElement)
-  }
-
-  const createWrapperElement = () => {
-    state.wrapperElement = document.createElement('div')
-    state.wrapperElement.id = 'ff-wrapper'
-    state.wrapperElement.addEventListener('blur', e => {
-      if (state.active) {
-        toggleActive()
-      }
     })
   }
 
@@ -340,6 +343,13 @@ const Extension = function() {
   }
 
   const listenToPromptEvents = () => {
+
+    state.wrapperElement.addEventListener('blur', e => {
+      if (state.active) {
+        toggleActive()
+      }
+    })
+
     state.promptElement.addEventListener('keydown', e => {
       if (handlePageUpAndDownWhileInFocus(e)) {
         return
@@ -570,7 +580,7 @@ const Extension = function() {
 
   const init = () => {
     listenToGlobalTriggers.init(state, toggleActive, reactToTriggerKey)
-    createElements()
+    elementCreator.init(state)
     listenToPromptEvents()
     console.log('FF is active.')
   }
@@ -582,7 +592,7 @@ const Extension = function() {
 
 module.exports = Extension
 
-},{"./command":1,"./globalTriggers":8,"./state":10}],8:[function(require,module,exports){
+},{"./command":1,"./elementCreator":7,"./globalTriggers":9,"./state":11}],9:[function(require,module,exports){
 const listenToGlobalTriggers = () => {
 
   const init = (state, toggleActive, reactToTriggerKey) => {
@@ -615,7 +625,7 @@ const listenToGlobalTriggers = () => {
 
 module.exports = listenToGlobalTriggers()
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 const Extension = require('./extension')
 chrome.extension.sendMessage({}, () => {
   const readyStateCheckInterval = setInterval(() => {
@@ -627,7 +637,7 @@ chrome.extension.sendMessage({}, () => {
   }, 10)
 })
 
-},{"./extension":7}],10:[function(require,module,exports){
+},{"./extension":8}],11:[function(require,module,exports){
 const state = {
   triggerKey: 'f',
   active: false,
@@ -649,4 +659,4 @@ const state = {
 
 module.exports = state
 
-},{}]},{},[9]);
+},{}]},{},[10]);
