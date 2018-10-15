@@ -26,6 +26,10 @@ const promptHandler = () => {
   }
 
   const clickOnMatchOfIndex = (state) => {
+    if (typeof state.matchingElements[state.matchIndex - 1] === 'undefined') {
+      console.warn('No matching element found.')
+      return
+    }
     state.matchingElements[state.matchIndex - 1].click()
   }
 
@@ -59,7 +63,6 @@ const promptHandler = () => {
         } else {
           state.numberSequenceInMemory = Number(e.key)
         }
-        console.log('state.numberSequenceInMemory:', state.numberSequenceInMemory)
         state.numberTimeoutId = setTimeout(() => {
           state.matchIndex = state.numberSequenceInMemory
           state.numberSequenceInMemory = null
