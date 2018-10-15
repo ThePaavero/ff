@@ -237,11 +237,12 @@ const state = require('./state')
 const command = require('./command')
 const listenToGlobalTriggers = require('./globalTriggers')
 const elementCreator = require('./elementCreator')
+const renderer = require('./renderer')
+const matchUpdater = require('./matchUpdater')
 
 const Extension = function() {
 
   const millisecondsThresholdForTriggerTaps = 500
-  const godSelectors = 'body *:not(#ff-prompt):not(#ff-wrapper)'
 
   const resetAllMatches = (resetData = true) => {
     if (!state.okToReset) {
@@ -287,8 +288,8 @@ const Extension = function() {
       state.matchIndex = state.matchingElements.length
     }
     resetAllMatches(false)
-    renderMatches()
-    renderInfo()
+    renderer.renderMatches(state)
+    renderer.renderInfo(state)
   }
 
   const getCurrentMatchingElement = () => {
@@ -297,7 +298,7 @@ const Extension = function() {
 
   const showNotification = (notification) => {
     state.notification = notification
-    renderNotification()
+    renderer.renderNotification(state)
   }
 
   const onEnter = () => {
@@ -408,132 +409,8 @@ const Extension = function() {
     })
   }
 
-  const elementShouldBeSkipped = (element) => {
-    const idsToIgnore = [
-      'ff-wrapper',
-      'ff-prompt',
-      'ff-infoElement',
-      'ff-notificationElement'
-    ]
-    if (idsToIgnore.includes(element.id)) {
-      return true
-    }
-    return typeof element.innerText === 'undefined' || element.hidden || element.style.display === 'none' || element.offsetParent === null
-  }
-
-  const elementsContentMatch = (element, str) => {
-    const matchAgainst = str.toLowerCase()
-    const textNodes = Array.from(element.childNodes).filter(child => child.nodeType === Node.TEXT_NODE)
-    let match = false
-    textNodes.forEach(textNode => {
-      const textContent = textNode.textContent
-      if (textContent.toLowerCase().indexOf(matchAgainst) > -1) {
-        match = true
-      }
-    })
-    if (element.value && element.value.indexOf(matchAgainst) > -1) {
-      match = true
-    }
-    if (element.placeholder && element.placeholder.indexOf(matchAgainst) > -1) {
-      match = true
-    }
-    return match
-  }
-
   const getFirstCharacter = () => {
     return state.promptString.substr(0, 1)
-  }
-
-  const updateMatches = (str) => {
-    const firstCharacter = getFirstCharacter()
-    if (!firstCharacter) {
-      return
-    }
-    let promptClassNamePostfix = 'search'
-    switch (firstCharacter) {
-      case '>':
-        state.command = str.substr(1, str.length)
-        promptClassNamePostfix = 'command'
-        break
-      case ':':
-        const selectorString = str.substr(1, str.length)
-        if (selectorString.trim() === '') {
-          return
-        }
-        promptClassNamePostfix = 'selector'
-        try {
-          state.matchingElements = Array.from(document.querySelectorAll(selectorString))
-        } catch (e) {
-          // ... Do nothing.
-        }
-        break
-      default:
-        state.matchingElements = doTextSearch(str)
-        break
-    }
-    state.promptElement.className = 'mode-' + promptClassNamePostfix
-  }
-
-  const doTextSearch = (str) => {
-    const elementsToLookIn = document.querySelectorAll(godSelectors)
-    const matches = []
-    Array.from(elementsToLookIn).forEach(element => {
-      if (!elementShouldBeSkipped(element)) {
-        if (elementsContentMatch(element, str)) {
-          matches.push(element)
-        }
-      }
-    })
-    return matches
-  }
-
-  const renderMatches = () => {
-    let counter = 1
-    state.matchingElements.forEach(element => {
-      if (elementShouldBeSkipped(element)) {
-        return
-      }
-      element.classList.add('ff-match')
-      if (counter === state.matchIndex) {
-        element.classList.add('ff-current-index')
-      }
-      const label = document.createElement('div')
-      const coordinates = element.getBoundingClientRect()
-      label.innerText = counter
-      label.className = 'ff-label'
-      if (counter === state.matchIndex) {
-        label.classList.add('active')
-      }
-      label.style.top = (coordinates.y + window.scrollY) + 'px'
-      label.style.left = (coordinates.x + window.scrollX) + 'px'
-      document.body.appendChild(label)
-      counter++
-    })
-    if (state.matchingElements.length > 0) {
-      scrollToMatchWithCurrentIndex()
-    }
-  }
-
-  const scrollToMatchWithCurrentIndex = () => {
-    const highlightedElement = document.querySelector('.ff-current-index')
-    if (!highlightedElement) {
-      return
-    }
-    highlightedElement.scrollIntoView({
-      block: 'center',
-      behavior: 'smooth'
-    })
-  }
-
-  const renderInfo = () => {
-    const amountOfMatches = state.matchingElements.length
-    state.infoElement.innerHTML = `
-      <div class="ff-match-count-indicator ${amountOfMatches > 0 ? 'over-zero' : ''}">
-        ${amountOfMatches}
-      </div>
-      matches
-      ${amountOfMatches > 1 ? '(' + state.matchIndex + ')' : ''}
-    `
   }
 
   const resetNotification = () => {
@@ -543,25 +420,16 @@ const Extension = function() {
     }
   }
 
-  const renderNotification = () => {
-    if (!state.notification) {
-      return
-    }
-    state.notificationElement.innerHTML = `
-      <div class="${state.notification.type}">${state.notification.message}</div>
-    `
-  }
-
   const tick = (cmd) => {
     if (cmd.trim() === '') {
       state.promptElement.className = ''
     }
     state.matchIndex = 1
     resetAllMatches()
-    updateMatches(cmd)
-    renderMatches()
-    renderInfo()
-    renderNotification()
+    matchUpdater.run(cmd, state)
+    renderer.renderMatches(state)
+    renderer.renderInfo(state)
+    renderer.renderNotification(state)
     resetNotification()
   }
 
@@ -592,7 +460,7 @@ const Extension = function() {
 
 module.exports = Extension
 
-},{"./command":1,"./elementCreator":7,"./globalTriggers":9,"./state":11}],9:[function(require,module,exports){
+},{"./command":1,"./elementCreator":7,"./globalTriggers":9,"./matchUpdater":11,"./renderer":12,"./state":13}],9:[function(require,module,exports){
 const listenToGlobalTriggers = () => {
 
   const init = (state, toggleActive, reactToTriggerKey) => {
@@ -638,6 +506,162 @@ chrome.extension.sendMessage({}, () => {
 })
 
 },{"./extension":8}],11:[function(require,module,exports){
+const matchUpdater = () => {
+
+  const godSelectors = 'body *:not(#ff-prompt):not(#ff-wrapper)'
+
+  const elementsContentMatch = (element, str) => {
+    const matchAgainst = str.toLowerCase()
+    const textNodes = Array.from(element.childNodes).filter(child => child.nodeType === Node.TEXT_NODE)
+    let match = false
+    textNodes.forEach(textNode => {
+      const textContent = textNode.textContent
+      if (textContent.toLowerCase().indexOf(matchAgainst) > -1) {
+        match = true
+      }
+    })
+    if (element.value && element.value.indexOf(matchAgainst) > -1) {
+      match = true
+    }
+    if (element.placeholder && element.placeholder.indexOf(matchAgainst) > -1) {
+      match = true
+    }
+    return match
+  }
+
+
+  const elementShouldBeSkipped = (element) => {
+    const idsToIgnore = [
+      'ff-wrapper',
+      'ff-prompt',
+      'ff-infoElement',
+      'ff-notificationElement'
+    ]
+    if (idsToIgnore.includes(element.id)) {
+      return true
+    }
+    return typeof element.innerText === 'undefined' || element.hidden || element.style.display === 'none' || element.offsetParent === null
+  }
+
+  const doTextSearch = (str) => {
+    const elementsToLookIn = document.querySelectorAll(godSelectors)
+    const matches = []
+    Array.from(elementsToLookIn).forEach(element => {
+      if (!elementShouldBeSkipped(element)) {
+        if (elementsContentMatch(element, str)) {
+          matches.push(element)
+        }
+      }
+    })
+    return matches
+  }
+
+  const run = (str, state) => {
+    const firstCharacter = state.promptString.substr(0, 1)
+    if (!firstCharacter) {
+      return
+    }
+    let promptClassNamePostfix = 'search'
+    switch (firstCharacter) {
+      case '>':
+        state.command = str.substr(1, str.length)
+        promptClassNamePostfix = 'command'
+        break
+      case ':':
+        const selectorString = str.substr(1, str.length)
+        if (selectorString.trim() === '') {
+          return
+        }
+        promptClassNamePostfix = 'selector'
+        try {
+          state.matchingElements = Array.from(document.querySelectorAll(selectorString))
+        } catch (e) {
+          // ... Do nothing.
+        }
+        break
+      default:
+        state.matchingElements = doTextSearch(str)
+        break
+    }
+    state.promptElement.className = 'mode-' + promptClassNamePostfix
+  }
+
+  return {run}
+}
+
+module.exports = matchUpdater()
+
+},{}],12:[function(require,module,exports){
+const renderer = () => {
+
+  const scrollToMatchWithCurrentIndex = () => {
+    const highlightedElement = document.querySelector('.ff-current-index')
+    if (!highlightedElement) {
+      return
+    }
+    highlightedElement.scrollIntoView({
+      block: 'center',
+      behavior: 'smooth'
+    })
+  }
+
+  const renderInfo = (state) => {
+    const amountOfMatches = state.matchingElements.length
+    state.infoElement.innerHTML = `
+      <div class="ff-match-count-indicator ${amountOfMatches > 0 ? 'over-zero' : ''}">
+        ${amountOfMatches}
+      </div>
+      matches
+      ${amountOfMatches > 1 ? '(' + state.matchIndex + ')' : ''}
+    `
+  }
+
+  const renderNotification = (state) => {
+    if (!state.notification) {
+      return
+    }
+    state.notificationElement.innerHTML = `
+      <div class="${state.notification.type}">${state.notification.message}</div>
+    `
+  }
+
+  const renderMatches = (state) => {
+    let counter = 1
+    state.matchingElements.forEach(element => {
+      // if (elementShouldBeSkipped(element)) {
+      //   return
+      // }
+      element.classList.add('ff-match')
+      if (counter === state.matchIndex) {
+        element.classList.add('ff-current-index')
+      }
+      const label = document.createElement('div')
+      const coordinates = element.getBoundingClientRect()
+      label.innerText = counter
+      label.className = 'ff-label'
+      if (counter === state.matchIndex) {
+        label.classList.add('active')
+      }
+      label.style.top = (coordinates.y + window.scrollY) + 'px'
+      label.style.left = (coordinates.x + window.scrollX) + 'px'
+      document.body.appendChild(label)
+      counter++
+    })
+    if (state.matchingElements.length > 0) {
+      scrollToMatchWithCurrentIndex()
+    }
+  }
+
+  return {
+    renderInfo,
+    renderNotification,
+    renderMatches
+  }
+}
+
+module.exports = renderer()
+
+},{}],13:[function(require,module,exports){
 const state = {
   triggerKey: 'f',
   active: false,
