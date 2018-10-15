@@ -1,3 +1,5 @@
+const ownElementSelectors = '.ff-label, .ff-showClassesCommand-label'
+
 module.exports = {
   elementShouldBeSkipped: (element) => {
     const idsToIgnore = [
@@ -18,10 +20,13 @@ module.exports = {
     if (state.active) {
       state.promptElement.focus()
     } else {
+      Array.from(document.querySelectorAll(ownElementSelectors)).forEach(element => {
+        element.parentElement.removeChild(element)
+      })
       state.promptString = ''
       state.promptElement.innerText = state.promptString
       if (resetFunction) {
-        resetFunction(state,true)
+        resetFunction(state, true)
       }
     }
   }
