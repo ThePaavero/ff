@@ -1,3 +1,5 @@
+const helpers = require('./helpers')
+
 const renderer = () => {
 
   const scrollToMatchWithCurrentIndex = () => {
@@ -34,9 +36,9 @@ const renderer = () => {
   const renderMatches = (state) => {
     let counter = 1
     state.matchingElements.forEach(element => {
-      // if (elementShouldBeSkipped(element)) {
-      //   return
-      // }
+      if (helpers.elementShouldBeSkipped(element)) {
+        return
+      }
       element.classList.add('ff-match')
       if (counter === state.matchIndex) {
         element.classList.add('ff-current-index')

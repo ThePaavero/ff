@@ -1,6 +1,9 @@
+const matchUpdater = require('./matchUpdater')
+const helpers = require('./helpers')
+
 const promptHandler = () => {
 
-  const handlePageUpAndDownWhileInFocus = (e) => {
+  const handlePageUpAndDownWhileInFocus = (state, e) => {
     // What a hack:
     // In order to not prevent normal Page Up / Page Down scrolling of the page itself,
     // because of the way an element with contenteditable set to true and is in focus behaves on
@@ -18,16 +21,16 @@ const promptHandler = () => {
     return false
   }
 
-  const init = (state, toggleActive, rotateMatch, onEnter, resetAllMatches, tick) => {
+  const init = (state, rotateMatch, onEnter, tick) => {
 
     state.wrapperElement.addEventListener('blur', e => {
       if (state.active) {
-        toggleActive()
+        helpers.toggleActive(state)
       }
     })
 
     state.promptElement.addEventListener('keydown', e => {
-      if (handlePageUpAndDownWhileInFocus(e)) {
+      if (handlePageUpAndDownWhileInFocus(state, e)) {
         return
       }
       if (e.key === 'Enter' || e.key === 'Tab' || (!isNaN(Number(e.key)) && Number(e.key) !== 0 && e.key !== 0 && e.key !== '0')) {
@@ -70,11 +73,11 @@ const promptHandler = () => {
     ];
     state.promptElement.addEventListener('keyup', e => {
       if (e.key === 'Escape') {
-        toggleActive()
+        helpers.toggleActive(state)
       }
       state.promptString = state.promptElement.innerText.trim()
       if (state.promptString === '' || state.promptString.length < 2) {
-        resetAllMatches()
+        matchUpdater.resetAllMatches(state, true)
         state.promptElement.className = ''
         return
       }

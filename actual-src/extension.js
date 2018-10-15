@@ -5,25 +5,9 @@ const elementCreator = require('./elementCreator')
 const renderer = require('./renderer')
 const matchUpdater = require('./matchUpdater')
 const promptHandler = require('./promptHandler')
+const helpers = require('./helpers')
 
 const Extension = function() {
-
-  const millisecondsThresholdForTriggerTaps = 500
-
-  const resetAllMatches = (resetData = true) => {
-    if (!state.okToReset) {
-      return
-    }
-    if (resetData) {
-      state.matchingElements = []
-    }
-    Array.from(document.querySelectorAll('body *')).forEach(element => {
-      element.classList.remove(...['ff-match', 'ff-current-index'])
-    })
-    Array.from(document.querySelectorAll('.ff-label, .ff-element')).forEach(element => {
-      element.parentElement.removeChild(element)
-    })
-  }
 
   const reactToTriggerKey = () => {
     // If we're typing into our prompt (or other inputs/textareas), ignore these triggers.
@@ -37,11 +21,11 @@ const Extension = function() {
     }
     state.triggerKeyTappedTimeoutId = setTimeout(() => {
       state.keyKeyPressedCount = 0
-    }, millisecondsThresholdForTriggerTaps)
+    }, state.millisecondsThresholdForTriggerTaps)
     state.keyKeyPressedCount++
     if (state.keyKeyPressedCount === 2) {
       state.keyKeyPressedCount = 0
-      toggleActive()
+      helpers.toggleActive(state)
     }
   }
 
@@ -53,7 +37,7 @@ const Extension = function() {
     if (state.matchIndex < 1) {
       state.matchIndex = state.matchingElements.length
     }
-    resetAllMatches(false)
+    matchUpdater.resetAllMatches(state, false)
     renderer.renderMatches(state)
     renderer.renderInfo(state)
   }
@@ -87,8 +71,8 @@ const Extension = function() {
     const currentMatchingElement = getCurrentMatchingElement()
     currentMatchingElement.focus()
     currentMatchingElement.click()
-    resetAllMatches()
-    toggleActive()
+    matchUpdater.resetAllMatches(state, true)
+    helpers.toggleActive(state)
   }
 
   const getFirstCharacter = () => {
@@ -107,7 +91,7 @@ const Extension = function() {
       state.promptElement.className = ''
     }
     state.matchIndex = 1
-    resetAllMatches()
+    matchUpdater.resetAllMatches(state, true)
     matchUpdater.run(cmd, state)
     renderer.renderMatches(state)
     renderer.renderInfo(state)
@@ -115,23 +99,10 @@ const Extension = function() {
     resetNotification()
   }
 
-  const toggleActive = () => {
-    state.keyKeyPressedCount = 0
-    state.active = !state.active
-    state.wrapperElement.classList.toggle('active')
-    if (state.active) {
-      state.promptElement.focus()
-    } else {
-      state.promptString = ''
-      state.promptElement.innerText = state.promptString
-      resetAllMatches()
-    }
-  }
-
   const init = () => {
-    listenToGlobalTriggers.init(state, toggleActive, reactToTriggerKey)
+    listenToGlobalTriggers.init(state, reactToTriggerKey)
     elementCreator.init(state)
-    promptHandler.init(state, toggleActive, rotateMatch, onEnter, resetAllMatches, tick)
+    promptHandler.init(state, rotateMatch, onEnter, tick)
     console.log('FF is active.')
   }
 

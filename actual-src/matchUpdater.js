@@ -1,6 +1,23 @@
+const helpers = require('./helpers')
+
 const matchUpdater = () => {
 
   const godSelectors = 'body *:not(#ff-prompt):not(#ff-wrapper)'
+
+  const resetAllMatches = (state, resetData = true) => {
+    if (!state.okToReset) {
+      return
+    }
+    if (resetData) {
+      state.matchingElements = []
+    }
+    Array.from(document.querySelectorAll('body *')).forEach(element => {
+      element.classList.remove(...['ff-match', 'ff-current-index'])
+    })
+    Array.from(document.querySelectorAll('.ff-label, .ff-element')).forEach(element => {
+      element.parentElement.removeChild(element)
+    })
+  }
 
   const elementsContentMatch = (element, str) => {
     const matchAgainst = str.toLowerCase()
@@ -21,25 +38,11 @@ const matchUpdater = () => {
     return match
   }
 
-
-  const elementShouldBeSkipped = (element) => {
-    const idsToIgnore = [
-      'ff-wrapper',
-      'ff-prompt',
-      'ff-infoElement',
-      'ff-notificationElement'
-    ]
-    if (idsToIgnore.includes(element.id)) {
-      return true
-    }
-    return typeof element.innerText === 'undefined' || element.hidden || element.style.display === 'none' || element.offsetParent === null
-  }
-
   const doTextSearch = (str) => {
     const elementsToLookIn = document.querySelectorAll(godSelectors)
     const matches = []
     Array.from(elementsToLookIn).forEach(element => {
-      if (!elementShouldBeSkipped(element)) {
+      if (!helpers.elementShouldBeSkipped(element)) {
         if (elementsContentMatch(element, str)) {
           matches.push(element)
         }
@@ -78,7 +81,10 @@ const matchUpdater = () => {
     state.promptElement.className = 'mode-' + promptClassNamePostfix
   }
 
-  return {run}
+  return {
+    run,
+    resetAllMatches
+  }
 }
 
 module.exports = matchUpdater()

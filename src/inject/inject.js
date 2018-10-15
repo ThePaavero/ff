@@ -240,25 +240,9 @@ const elementCreator = require('./elementCreator')
 const renderer = require('./renderer')
 const matchUpdater = require('./matchUpdater')
 const promptHandler = require('./promptHandler')
+const helpers = require('./helpers')
 
 const Extension = function() {
-
-  const millisecondsThresholdForTriggerTaps = 500
-
-  const resetAllMatches = (resetData = true) => {
-    if (!state.okToReset) {
-      return
-    }
-    if (resetData) {
-      state.matchingElements = []
-    }
-    Array.from(document.querySelectorAll('body *')).forEach(element => {
-      element.classList.remove(...['ff-match', 'ff-current-index'])
-    })
-    Array.from(document.querySelectorAll('.ff-label, .ff-element')).forEach(element => {
-      element.parentElement.removeChild(element)
-    })
-  }
 
   const reactToTriggerKey = () => {
     // If we're typing into our prompt (or other inputs/textareas), ignore these triggers.
@@ -272,11 +256,11 @@ const Extension = function() {
     }
     state.triggerKeyTappedTimeoutId = setTimeout(() => {
       state.keyKeyPressedCount = 0
-    }, millisecondsThresholdForTriggerTaps)
+    }, state.millisecondsThresholdForTriggerTaps)
     state.keyKeyPressedCount++
     if (state.keyKeyPressedCount === 2) {
       state.keyKeyPressedCount = 0
-      toggleActive()
+      helpers.toggleActive(state)
     }
   }
 
@@ -288,7 +272,7 @@ const Extension = function() {
     if (state.matchIndex < 1) {
       state.matchIndex = state.matchingElements.length
     }
-    resetAllMatches(false)
+    matchUpdater.resetAllMatches(state, false)
     renderer.renderMatches(state)
     renderer.renderInfo(state)
   }
@@ -322,8 +306,8 @@ const Extension = function() {
     const currentMatchingElement = getCurrentMatchingElement()
     currentMatchingElement.focus()
     currentMatchingElement.click()
-    resetAllMatches()
-    toggleActive()
+    matchUpdater.resetAllMatches(state, true)
+    helpers.toggleActive(state)
   }
 
   const getFirstCharacter = () => {
@@ -342,7 +326,7 @@ const Extension = function() {
       state.promptElement.className = ''
     }
     state.matchIndex = 1
-    resetAllMatches()
+    matchUpdater.resetAllMatches(state, true)
     matchUpdater.run(cmd, state)
     renderer.renderMatches(state)
     renderer.renderInfo(state)
@@ -350,23 +334,10 @@ const Extension = function() {
     resetNotification()
   }
 
-  const toggleActive = () => {
-    state.keyKeyPressedCount = 0
-    state.active = !state.active
-    state.wrapperElement.classList.toggle('active')
-    if (state.active) {
-      state.promptElement.focus()
-    } else {
-      state.promptString = ''
-      state.promptElement.innerText = state.promptString
-      resetAllMatches()
-    }
-  }
-
   const init = () => {
-    listenToGlobalTriggers.init(state, toggleActive, reactToTriggerKey)
+    listenToGlobalTriggers.init(state, reactToTriggerKey)
     elementCreator.init(state)
-    promptHandler.init(state, toggleActive, rotateMatch, onEnter, resetAllMatches, tick)
+    promptHandler.init(state, rotateMatch, onEnter, tick)
     console.log('FF is active.')
   }
 
@@ -377,13 +348,15 @@ const Extension = function() {
 
 module.exports = Extension
 
-},{"./command":1,"./elementCreator":7,"./globalTriggers":9,"./matchUpdater":11,"./promptHandler":12,"./renderer":13,"./state":14}],9:[function(require,module,exports){
+},{"./command":1,"./elementCreator":7,"./globalTriggers":9,"./helpers":10,"./matchUpdater":12,"./promptHandler":13,"./renderer":14,"./state":15}],9:[function(require,module,exports){
+const helpers = require('./helpers')
+
 const listenToGlobalTriggers = () => {
 
-  const init = (state, toggleActive, reactToTriggerKey) => {
+  const init = (state, reactToTriggerKey) => {
     document.body.addEventListener('click', e => {
       if (state.active && e.target !== state.wrapperElement && e.target !== state.promptElement) {
-        toggleActive()
+        helpers.toggleActive(state)
       }
     })
     document.addEventListener('keyup', e => {
@@ -410,7 +383,37 @@ const listenToGlobalTriggers = () => {
 
 module.exports = listenToGlobalTriggers()
 
-},{}],10:[function(require,module,exports){
+},{"./helpers":10}],10:[function(require,module,exports){
+module.exports = {
+  elementShouldBeSkipped: (element) => {
+    const idsToIgnore = [
+      'ff-wrapper',
+      'ff-prompt',
+      'ff-infoElement',
+      'ff-notificationElement'
+    ]
+    if (idsToIgnore.includes(element.id)) {
+      return true
+    }
+    return typeof element.innerText === 'undefined' || element.hidden || element.style.display === 'none' || element.offsetParent === null
+  },
+  toggleActive: (state, resetFunction = null) => {
+    state.keyKeyPressedCount = 0
+    state.active = !state.active
+    state.wrapperElement.classList.toggle('active')
+    if (state.active) {
+      state.promptElement.focus()
+    } else {
+      state.promptString = ''
+      state.promptElement.innerText = state.promptString
+      if (resetFunction) {
+        resetFunction(state,true)
+      }
+    }
+  }
+}
+
+},{}],11:[function(require,module,exports){
 const Extension = require('./extension')
 chrome.extension.sendMessage({}, () => {
   const readyStateCheckInterval = setInterval(() => {
@@ -422,10 +425,27 @@ chrome.extension.sendMessage({}, () => {
   }, 10)
 })
 
-},{"./extension":8}],11:[function(require,module,exports){
+},{"./extension":8}],12:[function(require,module,exports){
+const helpers = require('./helpers')
+
 const matchUpdater = () => {
 
   const godSelectors = 'body *:not(#ff-prompt):not(#ff-wrapper)'
+
+  const resetAllMatches = (state, resetData = true) => {
+    if (!state.okToReset) {
+      return
+    }
+    if (resetData) {
+      state.matchingElements = []
+    }
+    Array.from(document.querySelectorAll('body *')).forEach(element => {
+      element.classList.remove(...['ff-match', 'ff-current-index'])
+    })
+    Array.from(document.querySelectorAll('.ff-label, .ff-element')).forEach(element => {
+      element.parentElement.removeChild(element)
+    })
+  }
 
   const elementsContentMatch = (element, str) => {
     const matchAgainst = str.toLowerCase()
@@ -446,25 +466,11 @@ const matchUpdater = () => {
     return match
   }
 
-
-  const elementShouldBeSkipped = (element) => {
-    const idsToIgnore = [
-      'ff-wrapper',
-      'ff-prompt',
-      'ff-infoElement',
-      'ff-notificationElement'
-    ]
-    if (idsToIgnore.includes(element.id)) {
-      return true
-    }
-    return typeof element.innerText === 'undefined' || element.hidden || element.style.display === 'none' || element.offsetParent === null
-  }
-
   const doTextSearch = (str) => {
     const elementsToLookIn = document.querySelectorAll(godSelectors)
     const matches = []
     Array.from(elementsToLookIn).forEach(element => {
-      if (!elementShouldBeSkipped(element)) {
+      if (!helpers.elementShouldBeSkipped(element)) {
         if (elementsContentMatch(element, str)) {
           matches.push(element)
         }
@@ -503,15 +509,21 @@ const matchUpdater = () => {
     state.promptElement.className = 'mode-' + promptClassNamePostfix
   }
 
-  return {run}
+  return {
+    run,
+    resetAllMatches
+  }
 }
 
 module.exports = matchUpdater()
 
-},{}],12:[function(require,module,exports){
+},{"./helpers":10}],13:[function(require,module,exports){
+const matchUpdater = require('./matchUpdater')
+const helpers = require('./helpers')
+
 const promptHandler = () => {
 
-  const handlePageUpAndDownWhileInFocus = (e) => {
+  const handlePageUpAndDownWhileInFocus = (state, e) => {
     // What a hack:
     // In order to not prevent normal Page Up / Page Down scrolling of the page itself,
     // because of the way an element with contenteditable set to true and is in focus behaves on
@@ -529,16 +541,16 @@ const promptHandler = () => {
     return false
   }
 
-  const init = (state, toggleActive, rotateMatch, onEnter, resetAllMatches, tick) => {
+  const init = (state, rotateMatch, onEnter, tick) => {
 
     state.wrapperElement.addEventListener('blur', e => {
       if (state.active) {
-        toggleActive()
+        helpers.toggleActive(state)
       }
     })
 
     state.promptElement.addEventListener('keydown', e => {
-      if (handlePageUpAndDownWhileInFocus(e)) {
+      if (handlePageUpAndDownWhileInFocus(state, e)) {
         return
       }
       if (e.key === 'Enter' || e.key === 'Tab' || (!isNaN(Number(e.key)) && Number(e.key) !== 0 && e.key !== 0 && e.key !== '0')) {
@@ -581,11 +593,11 @@ const promptHandler = () => {
     ];
     state.promptElement.addEventListener('keyup', e => {
       if (e.key === 'Escape') {
-        toggleActive()
+        helpers.toggleActive(state)
       }
       state.promptString = state.promptElement.innerText.trim()
       if (state.promptString === '' || state.promptString.length < 2) {
-        resetAllMatches()
+        matchUpdater.resetAllMatches(state, true)
         state.promptElement.className = ''
         return
       }
@@ -600,7 +612,9 @@ const promptHandler = () => {
 
 module.exports = promptHandler()
 
-},{}],13:[function(require,module,exports){
+},{"./helpers":10,"./matchUpdater":12}],14:[function(require,module,exports){
+const helpers = require('./helpers')
+
 const renderer = () => {
 
   const scrollToMatchWithCurrentIndex = () => {
@@ -637,9 +651,9 @@ const renderer = () => {
   const renderMatches = (state) => {
     let counter = 1
     state.matchingElements.forEach(element => {
-      // if (elementShouldBeSkipped(element)) {
-      //   return
-      // }
+      if (helpers.elementShouldBeSkipped(element)) {
+        return
+      }
       element.classList.add('ff-match')
       if (counter === state.matchIndex) {
         element.classList.add('ff-current-index')
@@ -670,8 +684,9 @@ const renderer = () => {
 
 module.exports = renderer()
 
-},{}],14:[function(require,module,exports){
+},{"./helpers":10}],15:[function(require,module,exports){
 const state = {
+  millisecondsThresholdForTriggerTaps: 500,
   triggerKey: 'f',
   active: false,
   keyKeyPressedCount: 0,
@@ -692,4 +707,4 @@ const state = {
 
 module.exports = state
 
-},{}]},{},[10]);
+},{}]},{},[11]);

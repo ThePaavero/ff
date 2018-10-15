@@ -1,9 +1,11 @@
+const helpers = require('./helpers')
+
 const listenToGlobalTriggers = () => {
 
-  const init = (state, toggleActive, reactToTriggerKey) => {
+  const init = (state, reactToTriggerKey) => {
     document.body.addEventListener('click', e => {
       if (state.active && e.target !== state.wrapperElement && e.target !== state.promptElement) {
-        toggleActive()
+        helpers.toggleActive(state)
       }
     })
     document.addEventListener('keyup', e => {

@@ -1,4 +1,5 @@
 const state = {
+  millisecondsThresholdForTriggerTaps: 500,
   triggerKey: 'f',
   active: false,
   keyKeyPressedCount: 0,
